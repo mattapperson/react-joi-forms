@@ -1,4 +1,7 @@
 # JoiForms
+
+[![Build Status](https://travis-ci.org/appersonlabs/react-joi-forms.svg)](https://travis-ci.org/appersonlabs/react-joi-forms)
+
 Dont fight with forms in React based apps again! En-Joi it! :)
 
 ```

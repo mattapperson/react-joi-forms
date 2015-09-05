@@ -11,7 +11,7 @@
     "test-browser": "gulp test",
     "prebuild": "rm -rf lib",
     "build": "babel --stage 1 ./src --out-dir ./lib",
-    "prepublish": "npm run build",
+    "prepublish": "npm run build"
   },
   "devDependencies": {
     "babel": "^5.4.3",
