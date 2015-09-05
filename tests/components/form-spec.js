@@ -1,0 +1,262 @@
+var React = require('react/addons');
+var Form = require('../../src/index.jsx').JoiForm;
+var TestUtils = React.addons.TestUtils;
+var fileDropTest = require('../create-drop-test-image-event.js');
+
+var Joi = require('joi');
+
+describe('JoiForm', () => {
+
+    it('Should create an empty form object', () => {
+        var FormComponent = TestUtils.renderIntoDocument(<Form />);
+
+        expect(FormComponent.getDOMNode().tagName).to.equal('FORM');
+    });
+
+    it('Should create a form object with one input', () => {
+        var joyStuff = [
+            Joi.string().label('First Name')
+        ]
+        var FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} />);
+        var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
+
+        expect(inputs).to.exist;
+        expect(inputs.length).to.equal(1);
+        expect(inputs[0].getDOMNode().type).to.equal('text');
+    });
+
+    it('Can use a custom input for the UI', () => {
+        var joyStuff = [
+            Joi.string().label('First Name')
+        ]
+        var customInputs = {
+            textComponent: (value, options, events) => {
+                var mask = options.masks[0] || 'text'
+                delete options.masks;
+
+                // your custom element here...
+                return (
+                    <input {...options}
+                           type='funky'
+                           value={value}
+                           onChange={events.onChange}
+                           onFocus={events.onFocus}
+                           onBlur={events.onBlur} />
+                )
+            },
+        }
+        var FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} {...customInputs} />);
+        var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
+
+        expect(inputs).to.exist;
+        expect(inputs.length).to.equal(1);
+        expect(inputs[0].getDOMNode().type).to.equal('funky');
+    });
+
+    it('Should submit a form object with one input, and pass the forms data to onSubmit', (done) => {
+        var joyStuff = [
+            Joi.string().label('First Name')
+        ]
+        var FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} onSubmit={function(err, data) {
+            expect(err).to.not.exist;
+            expect(data).to.exist;
+            expect(Object.keys(data).length).to.equal(1);
+
+            done();
+        }} />);
+        var form = TestUtils.findRenderedDOMComponentWithTag(FormComponent, 'form');
+        var input = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input')[0].getDOMNode();
+
+        input.value = 'giraffe'
+        React.addons.TestUtils.Simulate.change(input);
+
+        TestUtils.Simulate.submit(form);
+    });
+
+    it('Should return an error when form validation fails', (done) => {
+        var joyStuff = [
+            Joi.string().label('First Name').required()
+        ]
+        var FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} onSubmit={function(err, data) {
+            expect(err).to.exist;
+            expect(data).to.not.exist;
+
+            done();
+        }} />);
+        var form = TestUtils.findRenderedDOMComponentWithTag(FormComponent, 'form');
+
+        TestUtils.Simulate.submit(form);
+    });
+
+    it('Should populate forms with values param', () => {
+        var joyStuff = [
+            Joi.string().label('First Name').required()
+        ];
+        var values = {
+            firstName: 'foo bar'
+        };
+        var FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff}
+                                                               values={values}  />);
+        var form = TestUtils.findRenderedDOMComponentWithTag(FormComponent, 'form');
+        var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
+
+        expect(inputs[0].getDOMNode().type).to.equal('text');
+        expect(inputs[0].getDOMNode().value).to.equal('foo bar');
+
+    });
+
+    it('Should populate forms with values param', () => {
+        var joyStuff = [
+            Joi.string().label('First Name').required()
+        ];
+        var values = {
+            firstName: 'foo bar'
+        };
+        var FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff}
+                                                               values={values}  />);
+        var form = TestUtils.findRenderedDOMComponentWithTag(FormComponent, 'form');
+        var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
+
+        expect(inputs[0].getDOMNode().type).to.equal('text');
+        expect(inputs[0].getDOMNode().value).to.equal('foo bar');
+
+    });
+
+    if(!process || !process.env.ENV_JSDOM) {
+        it('Should populate input with placeholder param', () => {
+            var joyStuff = [
+                Joi.string().label('First Name').required().example('this is a placeholder')
+            ];
+            var FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} />);
+            var form = TestUtils.findRenderedDOMComponentWithTag(FormComponent, 'form');
+            var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
+
+            expect(inputs[0].getDOMNode().placeholder).to.equal('this is a placeholder');
+
+        });
+    }
+
+    it('Should create a password text input', () => {
+        var joyStuff = [
+            Joi.string().label('First Name').meta({mask: 'password'}).required()
+        ];
+        var values = {
+            firstName: 'foo bar'
+        };
+        var FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff}
+                                                               values={values}  />);
+        var form = TestUtils.findRenderedDOMComponentWithTag(FormComponent, 'form');
+        var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
+
+        expect(inputs[0].getDOMNode().type).to.equal('password');
+        expect(inputs[0].getDOMNode().value).to.equal('foo bar');
+
+    });
+
+    it('Should create an html5 email text input', () => {
+        var joyStuff = [
+            Joi.string().email().label('Email Address').required()
+        ];
+        var FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} />);
+        var form = TestUtils.findRenderedDOMComponentWithTag(FormComponent, 'form');
+        var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
+
+        expect(inputs[0].getDOMNode().type).to.equal('email');
+
+    });
+
+    it('Should create a text area', () => {
+        var joyStuff = [
+            Joi.string().label('First Name').meta({type: 'textArea'}).required()
+        ];
+        var values = {
+            firstName: 'foo bar'
+        };
+        var FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff}
+                                                               values={values}  />);
+        var form = TestUtils.findRenderedDOMComponentWithTag(FormComponent, 'form');
+        var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'textarea');
+
+        expect(inputs[0]).to.exist;
+
+    });
+
+    it('Should create a select box', () => {
+        var joyStuff = [
+            Joi.string().label('Select Box').valid(['c', 'C'])
+        ];
+        var FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} />);
+        var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'select');
+        var options = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'option');
+
+        expect(inputs[0]).to.exist
+        expect(inputs[0].getDOMNode().name).to.equal('selectBox');
+
+        expect(options[0]).to.exist
+        expect(options.length).to.equal(2);
+        expect(options[0].getDOMNode().value).to.equal('c');
+        expect(options[0].getDOMNode().text).to.equal('c');
+    });
+
+    it('Should create a select box with custom names', () => {
+        var joyStuff = [
+            Joi.string().label('Select Box With Custom Names').valid(['c', 'C']).meta({names:['cat', 'Big Cat']})
+        ];
+        var FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} />);
+        var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'select');
+        var options = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'option');
+
+        expect(options[0]).to.exist
+        expect(options.length).to.equal(2);
+        expect(options[0].getDOMNode().value).to.equal('c');
+        expect(options[0].getDOMNode().text).to.equal('cat');
+    });
+
+    it('Should create a check box', () => {
+        var joyStuff = [
+            Joi.boolean().label('Check Box')
+        ];
+        var FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} />);
+        var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
+
+        expect(inputs[0]).to.exist
+        expect(inputs[0].getDOMNode().type).to.equal('checkbox');
+    });
+
+    it('Should create a file input', () => {
+        var joyStuff = [
+            Joi.object().label('File Upload').meta({type: 'file'})
+        ];
+        var FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} />);
+        var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
+
+        expect(inputs[0]).to.exist
+        expect(inputs[0].getDOMNode().type).to.equal('file');
+    });
+
+    if(!process || !process.env.ENV_JSDOM) {
+
+        it('Should capture file input on drop event', (done) => {
+            fileDropTest(function(fakeEvt, randomFile) {
+                var joyStuff = [
+                    Joi.object().label('File Upload').meta({type: 'file'})
+                ];
+                var FormComponent = TestUtils.renderIntoDocument(
+                    <Form schema={joyStuff}
+                          onChange={(e, formValues) => {
+                              expect(typeof formValues.fileUpload).to.equal('object');
+                              done();
+                          }}/>
+                );
+                var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
+
+                expect(inputs[0]).to.exist;
+                expect(inputs[0].getDOMNode().type).to.equal('file');
+                TestUtils.Simulate.change(inputs[0].getDOMNode(), fakeEvt);
+            });
+
+        });
+
+    }
+
+});

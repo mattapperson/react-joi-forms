@@ -1,0 +1,54 @@
+{
+  "name": "react-joi-forms",
+  "version": "1.0.0",
+  "description": "React forms from Joi schema",
+  "main": "lib/index.js",
+  "peerDependencies": {
+    "react": ">=0.13.0"
+  },
+  "scripts": {
+    "test": "ENV_JSDOM=true mocha --compilers js:babel/register --recursive tests/setup-node.js tests/components/",
+    "test-browser": "gulp test",
+    "prebuild": "rm -rf lib",
+    "build": "babel --stage 1 ./src --out-dir ./lib",
+    "prepublish": "npm run build",
+  },
+  "devDependencies": {
+    "babel": "^5.4.3",
+    "babel-core": "^5.8.21",
+    "babel-eslint": "^3.1.17",
+    "babel-loader": "^5.3.2",
+    "babelify": "^6.1.3",
+    "browserify": "^11.0.1",
+    "browserify-istanbul": "^0.2.1",
+    "chai": "^3.2.0",
+    "glob": "^4.0.6",
+    "gulp": "^3.8.9",
+    "gulp-util": "^3.0.1",
+    "jsdom": "^3.1.2",
+    "karma": "^0.12.24",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^0.1.5",
+    "karma-coverage": "^0.2.6",
+    "karma-firefox-launcher": "^0.1.3",
+    "karma-junit-reporter": "^0.2.2",
+    "karma-mocha": "^0.1.9",
+    "karma-phantomjs-launcher": "^0.1.4",
+    "karma-sinon-chai": "^0.2.0",
+    "karma-sourcemap-loader": "^0.3.0",
+    "lodash": "^3.10.1",
+    "mocha": "^2.2.5",
+    "proxyquireify": "^1.1.0",
+    "react-placeholder-shim": "0.0.7",
+    "sinon": "^1.10.3",
+    "sinon-chai": "^2.6.0",
+    "source-map-support": "^0.2.8",
+    "transfer-webpack-plugin": "^0.1.4",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "author": "Matt Apperson",
+  "license": "MIT",
+  "dependencies": {
+    "joi": "^6.6.1"
+  }
+}
