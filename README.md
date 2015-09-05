@@ -1,6 +1,10 @@
 # JoiForms
 Dont fight with forms in React based apps again! En-Joi it! :)
 
+```
+npm install react-joi-forms
+```
+
 ### What is JoiForms?
 A library that lets you create forms easily and painlessly from [Joi](http://github.com/hapijs/joi) Schemas. From simple CRUD forms to complex ones with custom input components... JoiForms has you covered.
 
@@ -115,4 +119,18 @@ var ContactForm = React.createClass({
 });
 ```
 
-### Full API docs coming next week... it's time for me to start my weekend :) 
+## Installation
+```
+npm install react-joi-forms
+```
+
+Note: In order to get joi working with webpack, we recommend adding this to your webpack webpack.config.js file:
+```js
+plugins: [
+        new webpack.NormalModuleReplacementPlugin(/^(net|dns)$/, path.resolve(__dirname, 'server/lib/shim.js'))
+    ]
+```
+where server/lib/shim.js is an empty file... This just removes the dependencies for some advanced email validation. Email validation still works, just it sticks to the text validation, not testing to see if the domain is real.
+
+
+### Full API docs coming next week... it's time for me to start my weekend :)
