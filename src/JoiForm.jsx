@@ -1,6 +1,6 @@
 var React = require('react');
 var Joi = require('joi');
-var FormSection = require('./FormSection.js');
+var FormSection = require('./FormSection');
 
 var Form = React.createClass({
     propTypes: {
@@ -22,7 +22,7 @@ var Form = React.createClass({
         return {
             joiForm: {
                 schema: this.props.schema,
-                values: this.props.values,
+                getValue: this.__getValue,
                 getErrors: this.__getErrors,
                 onChange: this.__onChange,
                 onFocus: this.__onFocus,
@@ -58,11 +58,10 @@ var Form = React.createClass({
                 delete options.key;
 
                 return (
-                    <div key={key}>
+                    <div key={key} className={err ? 'input-error' : 'input-no-error'}>
                         {err}
                         <input {...options}
                                type={type}
-                               id={err ? 'error' : 'noError'}
                                value={value}
                                onChange={events.onChange}
                                onFocus={events.onFocus}
@@ -139,6 +138,7 @@ var Form = React.createClass({
         };
     },
     shouldComponentUpdate(nextProps, nextState) {
+
         // dont re-render for schema state change, all others still should
         return nextState.schema === this.state.schema;
     },
@@ -159,7 +159,7 @@ var Form = React.createClass({
 
         return {
             schema: {},
-            values:{}
+            values: this.props.values
         };
     },
     componentWillReceiveProps() {
@@ -199,7 +199,7 @@ var Form = React.createClass({
             if(err) {
                 var formErrors= {};
                 err.details.forEach((inputError) => {
-                    formErrors[inputError.path] = inputError.message;
+                    formErrors[this._camelize(inputError.path)] = inputError.message;
                 })
 
                 this.setState({
@@ -227,11 +227,13 @@ var Form = React.createClass({
                 ...values
             },
         };
-        this.setState(newState);
 
-        if(this.props.onChange) {
-            this.props.onChange(e, newState.values);
-        }
+        this.setState(newState, () => {
+            if(this.props.onChange) {
+                this.props.onChange(e, newState.values);
+            }
+        });
+
     },
     __onFocus(e) {
         if(this.props.onFocus) {
@@ -244,13 +246,22 @@ var Form = React.createClass({
 
         Joi.validate(value, this.state.schema[name], (err, value) => {
             if(err) {
-                this.setState({
-                    errors: {...this.state.errors, err}
-                });
-            }
+                var formErrors= {};
+                err.details.forEach((inputError) => {
+                    formErrors[this._camelize(inputError.path)] = inputError.message;
+                })
 
-            if(this.props.onBlur) {
-                this.props.onBlur(e);
+                this.setState({
+                    errors: {...this.state.errors, ...formErrors}
+                }, () => {
+                    if(this.props.onBlur) {
+                        this.props.onBlur(e);
+                    }
+                });
+            } else {
+                if(this.props.onBlur) {
+                    this.props.onBlur(e);
+                }
             }
         });
     },
@@ -261,6 +272,14 @@ var Form = React.createClass({
         }
 
         return this.state.errors;
+    },
+    __getValue(fieldName) {
+        if(fieldName) {
+            var values = this.state.values || {};
+            return values[fieldName]
+        }
+
+        return this.state.values;
     }
 });
 

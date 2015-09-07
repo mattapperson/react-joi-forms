@@ -115,8 +115,6 @@ describe('JoiForm', () => {
             expect(err).to.exist;
             expect(err.errorFirstName).to.equal('"Error First Name" is required');
             expect(err.errorLastName).to.equal('"Error Last Name" is required');
-            var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
-            expect(inputs[0].getDOMNode().id).to.equal('error');
 
             expect(data).to.not.exist;
 
@@ -144,17 +142,17 @@ describe('JoiForm', () => {
 
     });
 
-    it('Should update the value when user enters text', () => {
+    it('Should update the value when user enters text', (done) => {
         var joyStuff = [
             Joi.string().label('First Name').required()
         ];
-        var FormComponent, inputs;
+        var FormComponent, inputs, firstInput;
         var customInputs = {
             textComponent: (error, value, options, events) => {
                 delete options.masks;
 
-                if(value && inputs) {
-                    expect(inputs[0].getDOMNode().value).to.equal('giraffe');
+                if(value) {
+                    expect(firstInput.value).to.equal('giraffe');
                     return done();
                 }
 
@@ -171,12 +169,52 @@ describe('JoiForm', () => {
         }
         FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} {...customInputs} />);
         inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
+        firstInput = inputs[0].getDOMNode();
 
         expect(inputs[0].getDOMNode().type).to.equal('text');
 
         var testInput = inputs[0].getDOMNode();
         testInput.value = 'giraffe'
         React.addons.TestUtils.Simulate.change(testInput);
+
+    });
+
+    it('Should update the error prop when user enters invalid text then blurs the field', (done) => {
+        var joyStuff = [
+            Joi.string().label('component First Name').min(10).required(),
+            Joi.string().label('component Last Name').min(2).required()
+        ];
+        var FormComponent, inputs, firstInput;
+        var customInputs = {
+            textComponent: (error, value, options, events) => {
+                delete options.masks;
+                if(error) {
+                    expect(firstInput.value).to.equal('giraffe');
+                    return done();
+                }
+
+                // your custom element here...
+                return (
+                    <input {...options}
+                           type='text'
+                           value={value}
+                           onChange={events.onChange}
+                           onFocus={events.onFocus}
+                           onBlur={events.onBlur} />
+                )
+            },
+        }
+        FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} {...customInputs} />);
+        inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
+        firstInput = inputs[0].getDOMNode()
+
+        expect(inputs[0].getDOMNode().type).to.equal('text');
+
+        var testInput = inputs[0].getDOMNode();
+        testInput.value = 'giraffe'
+        React.addons.TestUtils.Simulate.change(testInput);
+        React.addons.TestUtils.Simulate.blur(testInput);
+
 
     });
 

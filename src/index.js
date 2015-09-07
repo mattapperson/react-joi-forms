@@ -1,2 +1,2 @@
-exports.JoiForm = require('./JoiForm.js');
-exports.FormSection = require('./FormSection.js');
+exports.JoiForm = require('./JoiForm');
+exports.FormSection = require('./FormSection');

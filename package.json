@@ -1,15 +1,21 @@
 {
   "name": "react-joi-forms",
-  "version": "1.0.0",
+  "version": "1.1.3",
   "description": "React forms from Joi schema",
   "main": "lib/index.js",
   "peerDependencies": {
     "react": ">=0.13.0"
   },
+  "keywords": [
+    "react",
+    "joi",
+    "react-component",
+    "form"
+  ],
   "scripts": {
     "test": "ENV_JSDOM=true mocha --compilers js:babel/register --recursive tests/setup-node.js tests/components/",
     "test-browser": "gulp test",
-    "prebuild": "rm -rf lib",
+    "prebuild": "rm -rf lib && rm -rf build",
     "build": "babel --stage 1 ./src --out-dir ./lib",
     "prepublish": "npm run build"
   },

@@ -115,7 +115,7 @@ var FormSection = React.createClass({
                         )
                     }
 
-                    return context[fieldType + "Component"](context.getErrors(fieldName), context.values[fieldName], options, {
+                    return context[fieldType + "Component"](context.getErrors(fieldName), context.getValue(fieldName), options, {
                         onChange: this.__onChange,
                         onFocus: this.__onFocus,
                         onBlur: this.__onBlur
