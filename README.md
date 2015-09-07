@@ -88,19 +88,22 @@ var JoiForm = require('react-joi-forms').JoiForm;
 // We recommend putting this in its own file and just require it in so it can be shared
 // between all your forms.
 var customInputs = {
-    textComponent: (value, options, events) => {
+    textComponent: (err, value, options, events) => {
         var mask = options.masks[0] || 'text'
         delete options.masks;
 
         // your custom element here... for the sake of me being lazy in writing these docs
         // the "custom" UI is just re-implamenting the default. But you could put anything here
         return (
-            <input {...options}
-                   type={mask}
-                   value={value}
-                   onChange={events.onChange}
-                   onFocus={events.onFocus}
-                   onBlur={events.onBlur} />
+            <div className={err ? 'input-error' : 'input'}>
+                {err}
+                <input {...options}
+                    type={mask}
+                    value={value}
+                    onChange={events.onChange}
+                    onFocus={events.onFocus}
+                    onBlur={events.onBlur} />
+            </div>
         )
     },
 }

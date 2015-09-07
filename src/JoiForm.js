@@ -1,6 +1,6 @@
 var React = require('react');
 var Joi = require('joi');
-var FormSection = require('./FormSection.jsx');
+var FormSection = require('./FormSection.js');
 
 var Form = React.createClass({
     propTypes: {
@@ -23,6 +23,7 @@ var Form = React.createClass({
             joiForm: {
                 schema: this.props.schema,
                 values: this.props.values,
+                getErrors: this.__getErrors,
                 onChange: this.__onChange,
                 onFocus: this.__onFocus,
                 onBlur: this.__onBlur,
@@ -46,62 +47,93 @@ var Form = React.createClass({
     getDefaultProps() {
         return {
             values: {},
-            textComponent: (value, options, events) => {
-                var mask = options.masks[0] || 'text'
+            textComponent: (err, value, options, events) => {
+                var type = 'text';
+                if(['password', 'date', 'email'].indexOf(options.masks[0]) !== -1) {
+                    type = options.masks[0];
+                }
+
                 delete options.masks;
+                var key = options.key;
+                delete options.key;
 
                 return (
-                    <input {...options}
-                           type={mask}
-                           value={value}
-                           onChange={events.onChange}
-                           onFocus={events.onFocus}
-                           onBlur={events.onBlur} />
+                    <div key={key}>
+                        {err}
+                        <input {...options}
+                               type={type}
+                               id={err ? 'error' : 'noError'}
+                               value={value}
+                               onChange={events.onChange}
+                               onFocus={events.onFocus}
+                               onBlur={events.onBlur} />
+                    </div>
                 )
             },
-            selectComponent: (value, options, events) => {
+            selectComponent: (err, value, options, events) => {
                 var enums = options.enums;
                 delete options.enums
+                var key = options.key;
+                delete options.key;
 
                 return (
-                    <select value={value} {...options}>
-                        {Object.keys(enums).map((option) => {
-                            return (
-                                <option key={option} value={option}>{enums[option]}</option>
-                            );
+                    <div key={key} className={err ? 'input-error' : 'input'}>
+                        {err}
+                        <select value={value} {...options}>
+                            {Object.keys(enums).map((option) => {
+                                return (
+                                    <option key={option} value={option}>{enums[option]}</option>
+                                );
 
-                        })}
-                    </select>
+                            })}
+                        </select>
+                    </div>
                 );
             },
-            textAreaComponent: (value, options, events) => {
+            textAreaComponent: (err, value, options, events) => {
+                var key = options.key;
+                delete options.key;
+
                 return (
-                    <textarea {...options}
-                              value={value}
-                              onChange={events.onChange}
-                              onFocus={events.onFocus}
-                              onBlur={events.onBlur} ></textarea>
+                    <div key={key} className={err ? 'input-error' : 'input'}>
+                        {err}
+                        <textarea {...options}
+                                  value={value}
+                                  onChange={events.onChange}
+                                  onFocus={events.onFocus}
+                                  onBlur={events.onBlur} ></textarea>
+                    </div>
                 )
             },
-            checkboxComponent: (value, options, events) => {
+            checkboxComponent: (err, value, options, events) => {
                 options.type = 'checkbox';
+                var key = options.key;
+                delete options.key;
 
                 return (
-                    <input {...options}
-                           value={value}
-                           onChange={events.onChange}
-                           onFocus={events.onFocus}
-                           onBlur={events.onBlur} />
+                    <div key={key} className={err ? 'input-error' : 'input'}>
+                        {err}
+                        <input {...options}
+                               value={value}
+                               onChange={events.onChange}
+                               onFocus={events.onFocus}
+                               onBlur={events.onBlur} />
+                    </div>
                 );
             },
-            fileComponent: (value, options, events) => {
+            fileComponent: (err, value, options, events) => {
                 options.type = 'file';
+                var key = options.key;
+                delete options.key;
 
                 return (
-                    <input {...options}
-                           onChange={events.onChange}
-                           onFocus={events.onFocus}
-                           onBlur={events.onBlur} />
+                    <div key={key} className={err ? 'input-error' : 'input'}>
+                        {err}
+                        <input {...options}
+                               onChange={events.onChange}
+                               onFocus={events.onFocus}
+                               onBlur={events.onBlur} />
+                    </div>
                 );
             }
         };
@@ -163,8 +195,20 @@ var Form = React.createClass({
     submit() {
         if(!this.props.onSubmit) return;
 
-        Joi.validate(this.state.values, this.state.schema, (err, value) => {
-            if(err) return this.props.onSubmit(err);
+        Joi.validate(this.state.values, this.state.schema, {abortEarly: false}, (err, value) => {
+            if(err) {
+                var formErrors= {};
+                err.details.forEach((inputError) => {
+                    formErrors[inputError.path] = inputError.message;
+                })
+
+                this.setState({
+                    errors: formErrors
+                }, () => {
+                    this.props.onSubmit(formErrors);
+                });
+                return;
+            }
 
             this.props.onSubmit(null, this.state.values);
         });
@@ -181,7 +225,7 @@ var Form = React.createClass({
             values: {
                 ...this.state.values,
                 ...values
-            }
+            },
         };
         this.setState(newState);
 
@@ -194,10 +238,29 @@ var Form = React.createClass({
             this.props.onFocus(e);
         }
     },
-    __onBlur() {
-        if(this.props.onBlur) {
-            this.props.onBlur(e);
+    __onBlur(e) {
+        var value = e.target.value;
+        var name = e.target.name;
+
+        Joi.validate(value, this.state.schema[name], (err, value) => {
+            if(err) {
+                this.setState({
+                    errors: {...this.state.errors, err}
+                });
+            }
+
+            if(this.props.onBlur) {
+                this.props.onBlur(e);
+            }
+        });
+    },
+    __getErrors(fieldName) {
+        if(fieldName) {
+            var errors = this.state.errors || {};
+            return errors[fieldName]
         }
+
+        return this.state.errors;
     }
 });
 

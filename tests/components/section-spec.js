@@ -1,6 +1,6 @@
 var React = require('react/addons');
-var Form = require('../../src/index.jsx').JoiForm;
-var FormSection = require('../../src/index.jsx').FormSection;
+var Form = require('../../src/index.js').JoiForm;
+var FormSection = require('../../src/index.js').FormSection;
 var TestUtils = React.addons.TestUtils;
 
 var Joi = require('joi');

@@ -1,5 +1,5 @@
 var React = require('react/addons');
-var Form = require('../../src/index.jsx').JoiForm;
+var Form = require('../../src/index.js').JoiForm;
 var TestUtils = React.addons.TestUtils;
 var fileDropTest = require('../create-drop-test-image-event.js');
 
@@ -25,19 +25,51 @@ describe('JoiForm', () => {
         expect(inputs[0].getDOMNode().type).to.equal('text');
     });
 
+    it('Should fire the onFocus events for input', (done) => {
+        var joyStuff = [
+            Joi.string().label('First Name')
+        ]
+        var FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} onFocus={(e) => {
+            expect(e).to.exist;
+            done()
+        }}/>);
+        var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
+
+        expect(inputs).to.exist;
+        expect(inputs.length).to.equal(1);
+        React.addons.TestUtils.Simulate.focus(inputs[0]);
+    });
+
+    it('Should fire the onBlur events for input', (done) => {
+        var joyStuff = [
+            Joi.string().label('First Name')
+        ]
+        var FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} onBlur={(e) => {
+            expect(e).to.exist;
+            done()
+        }}/>);
+        var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
+
+        expect(inputs).to.exist;
+        expect(inputs.length).to.equal(1);
+        React.addons.TestUtils.Simulate.focus(inputs[0]);
+        React.addons.TestUtils.Simulate.blur(inputs[0]);
+    });
+
     it('Can use a custom input for the UI', () => {
         var joyStuff = [
             Joi.string().label('First Name')
         ]
         var customInputs = {
-            textComponent: (value, options, events) => {
+            textComponent: (error, value, options, events) => {
                 var mask = options.masks[0] || 'text'
                 delete options.masks;
 
                 // your custom element here...
                 return (
                     <input {...options}
-                           type='funky'
+                           type='text'
+                           id='funky'
                            value={value}
                            onChange={events.onChange}
                            onFocus={events.onFocus}
@@ -50,7 +82,7 @@ describe('JoiForm', () => {
 
         expect(inputs).to.exist;
         expect(inputs.length).to.equal(1);
-        expect(inputs[0].getDOMNode().type).to.equal('funky');
+        expect(inputs[0].getDOMNode().id).to.equal('funky');
     });
 
     it('Should submit a form object with one input, and pass the forms data to onSubmit', (done) => {
@@ -75,10 +107,17 @@ describe('JoiForm', () => {
 
     it('Should return an error when form validation fails', (done) => {
         var joyStuff = [
-            Joi.string().label('First Name').required()
+            Joi.string().label('Error First Name').required().min(2),
+            Joi.string().label('Error Last Name').required()
         ]
-        var FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} onSubmit={function(err, data) {
+        var FormComponent;
+        FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} onSubmit={function(err, data) {
             expect(err).to.exist;
+            expect(err.errorFirstName).to.equal('"Error First Name" is required');
+            expect(err.errorLastName).to.equal('"Error Last Name" is required');
+            var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
+            expect(inputs[0].getDOMNode().id).to.equal('error');
+
             expect(data).to.not.exist;
 
             done();
@@ -105,20 +144,39 @@ describe('JoiForm', () => {
 
     });
 
-    it('Should populate forms with values param', () => {
+    it('Should update the value when user enters text', () => {
         var joyStuff = [
             Joi.string().label('First Name').required()
         ];
-        var values = {
-            firstName: 'foo bar'
-        };
-        var FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff}
-                                                               values={values}  />);
-        var form = TestUtils.findRenderedDOMComponentWithTag(FormComponent, 'form');
-        var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
+        var FormComponent, inputs;
+        var customInputs = {
+            textComponent: (error, value, options, events) => {
+                delete options.masks;
+
+                if(value && inputs) {
+                    expect(inputs[0].getDOMNode().value).to.equal('giraffe');
+                    return done();
+                }
+
+                // your custom element here...
+                return (
+                    <input {...options}
+                           type='text'
+                           value={value}
+                           onChange={events.onChange}
+                           onFocus={events.onFocus}
+                           onBlur={events.onBlur} />
+                )
+            },
+        }
+        FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} {...customInputs} />);
+        inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
 
         expect(inputs[0].getDOMNode().type).to.equal('text');
-        expect(inputs[0].getDOMNode().value).to.equal('foo bar');
+
+        var testInput = inputs[0].getDOMNode();
+        testInput.value = 'giraffe'
+        React.addons.TestUtils.Simulate.change(testInput);
 
     });
 

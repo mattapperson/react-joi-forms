@@ -115,7 +115,7 @@ var FormSection = React.createClass({
                         )
                     }
 
-                    return context[fieldType + "Component"](context.values[fieldName], options, {
+                    return context[fieldType + "Component"](context.getErrors(fieldName), context.values[fieldName], options, {
                         onChange: this.__onChange,
                         onFocus: this.__onFocus,
                         onBlur: this.__onBlur
@@ -168,7 +168,10 @@ var FormSection = React.createClass({
         }
 
         if(context.onChange) {
-            context.onChange(e, values);
+            var change = {};
+            change[e.target.name] = values[e.target.name];
+
+            context.onChange(e, change);
         }
     },
     __onFocus(e) {
