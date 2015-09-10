@@ -16,6 +16,7 @@ module.exports = function(config) {
         ],
         plugins: [
               'karma-chrome-launcher',
+              'karma-firefox-launcher',
               'karma-chai',
               'karma-mocha',
               'karma-sourcemap-loader',
@@ -29,7 +30,7 @@ module.exports = function(config) {
                 ]
             },
             plugins: [
-                new webpack.NormalModuleReplacementPlugin(/^(net|dns)$/, path.resolve(__dirname, './tests/shim.js')),
+                new webpack.NormalModuleReplacementPlugin(/^(net|dns)$/, path.resolve(__dirname, './tests/setup/shim.js')),
                 new webpack.DefinePlugin({
                     'process.env.NODE_ENV': JSON.stringify('test')
                 })
@@ -46,9 +47,9 @@ module.exports = function(config) {
 
         browserNoActivityTimeout: 30000,
 
-        browsers: [ process.env.CONTINUOUS_INTEGRATION ? 'Firefox' : 'Chrome' ],
+        browsers: [ 'Firefox', 'Chrome' ],
 
-        singleRun: process.env.CONTINUOUS_INTEGRATION === 'true',
+        singleRun: true,
 
         port: 9876,
         colors: true,

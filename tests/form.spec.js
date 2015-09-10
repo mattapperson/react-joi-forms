@@ -1,7 +1,7 @@
 var React = require('react/addons');
-var Form = require('../../src/index.js').JoiForm;
+var Form = require('../src/index.js').JoiForm;
 var TestUtils = React.addons.TestUtils;
-var fileDropTest = require('../create-drop-test-image-event.js');
+var fileDropTest = require('./setup//create-drop-test-image-event.js');
 
 var Joi = require('joi');
 

@@ -13,7 +13,7 @@
     "form"
   ],
   "scripts": {
-    "test": "ENV_JSDOM=true mocha --compilers js:babel/register --recursive tests/setup-node.js tests/components/",
+    "test": "ENV_JSDOM=true mocha --compilers js:babel/register --recursive tests/setup/setup-node.js tests/",
     "test-browser": "karma start ./karma.conf.js  --single-run",
     "prebuild": "rm -rf lib && rm -rf build",
     "build": "babel --stage 1 ./src --out-dir ./lib",
@@ -34,6 +34,7 @@
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^0.2.0",
     "karma-cli": "^0.1.0",
+    "karma-firefox-launcher": "^0.1.6",
     "karma-mocha": "^0.2.0",
     "karma-sourcemap-loader": "^0.3.5",
     "karma-webpack": "^1.6.0",
