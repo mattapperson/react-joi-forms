@@ -13,11 +13,15 @@ module.exports = {
   },
   module: {
     loaders: [
-      { test: /\.jsx$|\.es6$|\.js$/, loaders: ['babel-loader?stage=0'], exclude: /node_modules/ },
+      { test: /\.jsx$|\.js$/, loaders: ['babel-loader?stage=0'], exclude: /node_modules/ },
     ]
   },
   plugins: [
-    new webpack.NoErrorsPlugin()
+    new webpack.NoErrorsPlugin(),
+    new webpack.NormalModuleReplacementPlugin(/^(net|dns)$/, path.resolve(__dirname, '../tests/setup/shim.js')),
+    new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify('test')
+    })
   ],
   devtool: "eval-source-map"
 };

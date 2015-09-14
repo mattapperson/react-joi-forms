@@ -75,7 +75,9 @@ var FormSection = React.createClass({
                         ...fieldSchema._meta,
                         required: fieldSchema._flags.presence === 'required',
                         name: fieldName,
-                        key: fieldName
+                        label: fieldSchema._settings.language.label,
+                        key: fieldName,
+                        default: fieldSchema._flags ? fieldSchema._flags.default : undefined
                     };
 
                     switch(fieldType) {
@@ -83,6 +85,11 @@ var FormSection = React.createClass({
                             options.placeholder = fieldSchema._examples[0] || undefined;
 
                             options.masks = [].concat(fieldSchema._meta.masks || []);
+                            if(fieldSchema._type === 'date' && options.masks[0] !== 'time') {
+                                options.masks.push('date');
+                            } else if(fieldSchema._type === 'date') {
+                                options.masks.push('time');
+                            }
                             if(options.mask) {
                                 options.masks.push(options.mask);
                                 delete options.mask;
@@ -98,7 +105,11 @@ var FormSection = React.createClass({
                             options.enums = this.makeObject(optionNames, optionValues);
                         break;
                         case 'checkbox':
-
+                            options.masks = [].concat(fieldSchema._meta.masks || []);
+                            if(options.mask) {
+                                options.masks.push(options.mask);
+                                delete options.mask;
+                            }
                         break;
                         case 'textArea':
 

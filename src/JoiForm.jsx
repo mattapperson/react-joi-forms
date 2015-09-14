@@ -157,12 +157,30 @@ var Form = React.createClass({
     getInitialState() {
         let props = (this.props.children) ? this.props.children.props : this.props;
 
-        return {
+        var state = {
             schema: {},
             values: this.props.values
         };
+
+        this.props.schema.forEach((fieldSchema) => {
+            var name = this._camelize(fieldSchema._settings.language.label);
+
+            // if no value set for this field, but their is a default, set it
+            if(!state.values[name] && (fieldSchema._flags && fieldSchema._flags.default !== undefined)
+            || fieldSchema._type === 'boolean') {
+                state.values[this._camelize(fieldSchema._settings.language.label)] = fieldSchema._flags.default || false;
+            }
+        });
+
+        return state;
     },
-    componentWillReceiveProps() {
+    _camelize(str) {
+        return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match, index) {
+            if (+match === 0) return ""; // or if (/\s+/.test(match)) for white spaces
+            return index == 0 ? match.toLowerCase() : match.toUpperCase();
+        });
+    },
+    componentWillReceiveProps(nextProps) {
         var schema = {};
         if(nextProps.schema) {
             nextProps.schema.forEach((fieldSchema) => {
@@ -209,7 +227,6 @@ var Form = React.createClass({
                 });
                 return;
             }
-
             this.props.onSubmit(null, this.state.values);
         });
 
