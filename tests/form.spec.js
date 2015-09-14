@@ -218,6 +218,57 @@ describe('JoiForm', () => {
 
     });
 
+    it('Should clear error prop when user updates field that had errored', (done) => {
+        var joyStuff = [
+            Joi.string().label('component First Name').min(10).required(),
+            Joi.string().label('component Last Name').min(2).required()
+        ];
+        var FormComponent, inputs, firstInput;
+        var customInputs = {
+            textComponent: (error, value, options, events) => {
+                delete options.masks;
+
+                switch(value) {
+                    case 'giraffes':
+                        expect(error).to.exist;
+                    break;
+                    case 'giraffe 8910':
+                        expect(error).to.not.exist;
+                        return done();
+                    break;
+                }
+
+                // your custom element here...
+                return (
+                    <input {...options}
+                           type='text'
+                           value={value}
+                           onChange={events.onChange}
+                           onFocus={events.onFocus}
+                           onBlur={events.onBlur} />
+                )
+            },
+        }
+        FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} {...customInputs} />);
+        inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
+        firstInput = inputs[0].getDOMNode()
+
+        expect(inputs[0].getDOMNode().type).to.equal('text');
+
+        var testInput = inputs[0].getDOMNode();
+        testInput.value = 'giraffe';
+        React.addons.TestUtils.Simulate.change(testInput);
+
+        React.addons.TestUtils.Simulate.blur(testInput);
+
+
+        testInput.value = 'giraffes';
+        React.addons.TestUtils.Simulate.change(testInput);
+
+        testInput.value = 'giraffe 8910'
+        React.addons.TestUtils.Simulate.change(testInput);
+    });
+
     if(!process || !process.env.ENV_JSDOM) {
         it('Should populate input with placeholder param', () => {
             var joyStuff = [

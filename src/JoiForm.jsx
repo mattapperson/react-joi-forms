@@ -221,6 +221,9 @@ var Form = React.createClass({
         });
     },
     __onChange(e, values) {
+        var name = e.target.name;
+        var value = e.target.value;
+
         var newState = {
             values: {
                 ...this.state.values,
@@ -228,11 +231,40 @@ var Form = React.createClass({
             },
         };
 
-        this.setState(newState, () => {
-            if(this.props.onChange) {
-                this.props.onChange(e, newState.values);
-            }
-        });
+        if(this.state.errors && this.state.errors[name]) {
+            Joi.validate(value, this.state.schema[name], (err, value) => {
+                if(err) {
+                    var formErrors= {};
+                    err.details.forEach((inputError) => {
+                        formErrors[this._camelize(inputError.path)] = inputError.message;
+                    });
+
+                    newState.errors = {...this.state.errors, ...formErrors};
+
+                    this.setState(newState, () => {
+                        if(this.props.onChange) {
+                            this.props.onChange(e, newState.values);
+                        }
+                    });
+                } else {
+
+                    newState.errors = {...this.state.errors};
+                    delete newState.errors[name];
+
+                    this.setState(newState, () => {
+                        if(this.props.onChange) {
+                            this.props.onChange(e, newState.values);
+                        }
+                    });
+                }
+            });
+        } else {
+            this.setState(newState, () => {
+                if(this.props.onChange) {
+                    this.props.onChange(e, newState.values);
+                }
+            });
+        }
 
     },
     __onFocus(e) {
