@@ -43,10 +43,7 @@ var Basic =  React.createClass({
                 <JoiForm ref="form" schema={this.joyStuff}
                         {...materialInputs}
                         onChange={(e, formValues) => {
-                            console.log(e)
-                            console.log(formValues)
                             this.setState(formValues)
-                            console.log(formValues)
                         }}
                         onSubmit={(e, formValues) => {
 

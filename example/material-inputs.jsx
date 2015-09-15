@@ -26,7 +26,6 @@ module.exports = {
                             hintText={options.label}
                             {...options}
                             value={value}
-                            mode="landscape"
                             errorText={err}
                             onChange={(err, date) => {
                                 var e = {
@@ -64,19 +63,18 @@ module.exports = {
         var key = options.key;
         delete options.key;
 
-        var selectOptions = Object.keys(enums).map((option) => {
+        var selectOptions = Object.keys(enums).map((option, i) => {
             return {
                 payload:option,
                 text:  enums[option]
             };
         });
-
         return (
             <div key={key} className={err ? 'input-error' : 'input'}>
-                <br />
                 <SelectField fullWidth={true}
-                            hintText={options.label}
+                            floatingLabelText={options.label}
                             menuItems={selectOptions}
+                            value={value}
                             errorText={err}
                             onChange={(err, index) => {
                                 var e = {
@@ -88,9 +86,7 @@ module.exports = {
                                 };
                                 events.onChange(e);
                                 events.onBlur(e);
-                            }}
-                            onFocus={events.onFocus}
-                            onBlur={events.onBlur} />
+                            }} />
             </div>
         );
     },
