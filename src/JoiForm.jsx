@@ -149,29 +149,32 @@ var Form = React.createClass({
                 schema[this._camelize(fieldSchema._settings.language.label)] = fieldSchema;
             });
         }
+
         this.setState({
             ...this.state,
             schema: schema
         });
     },
     getInitialState() {
-        let props = (this.props.children) ? this.props.children.props : this.props;
-
         var state = {
             schema: {},
             values: this.props.values
         };
 
-        this.props.schema.forEach((fieldSchema) => {
-            var name = this._camelize(fieldSchema._settings.language.label);
+        if(this.props.schema) {
+            this.props.schema.forEach((fieldSchema) => {
 
-            // if no value set for this field, but their is a default, set it
-            if(!state.values[name] && (fieldSchema._flags && fieldSchema._flags.default !== undefined)
-            || fieldSchema._type === 'boolean') {
-                state.values[this._camelize(fieldSchema._settings.language.label)] = fieldSchema._flags.default || false;
-            }
-        });
+                var name = this._camelize(fieldSchema._settings.language.label);
 
+                // if no value set for this field, but their is a default, set it
+                if(state.values[name] === undefined && fieldSchema._flags.default !== undefined) {
+                    state.values[name] = fieldSchema._flags.default;
+                }
+                if(state.values[name] === undefined && fieldSchema._type === 'boolean') {
+                    state.values[name] = false;
+                }
+            });
+        }
         return state;
     },
     _camelize(str) {

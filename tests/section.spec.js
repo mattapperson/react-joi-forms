@@ -8,9 +8,13 @@ var Joi = require('joi');
 describe('FormSection', () => {
 
     it('Should create a form containing one section', () => {
+        var joiSchema = [
+            Joi.string().label('field one'),
+            Joi.string().label('field two'),
+        ];
         var FormComponent = TestUtils.renderIntoDocument(
             <Form>
-                <FormSection />
+                <FormSection schema={joiSchema} />
             </Form>
         );
         var sections = TestUtils.scryRenderedComponentsWithType(FormComponent, FormSection);
