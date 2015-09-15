@@ -57,7 +57,7 @@ var FormSection = React.createClass({
                     // 2: Use switch statment to alter that based on fields schema
                     // 3: Allow override of defaults
                     var fieldType = this._getFieldType(fieldSchema);
-                    var fieldName = this._camelize(fieldSchema._settings.language.label);
+                    var fieldName = fieldSchema._meta.name || this._camelize(fieldSchema._settings.language.label);
                     var optionNames, optionValues;
 
                     if(fieldSchema._valids && fieldSchema._valids._set && fieldSchema._valids._set.length > 0) {

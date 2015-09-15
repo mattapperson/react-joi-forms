@@ -7,6 +7,44 @@ var Joi = require('joi');
 
 describe('FormSection', () => {
 
+    it('Should use camel cased label for name when no name provided', (done) => {
+        var joyStuff = [
+            Joi.string().label('First Name'),
+        ]
+        var FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} onSubmit={(err, values) => {
+            expect(values).to.exist;
+            expect(values.firstName).to.exist;
+
+            done()
+        }}/>);
+        var form = TestUtils.findRenderedDOMComponentWithTag(FormComponent, 'form');
+        var input = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input')[0].getDOMNode();
+
+        input.value = 'giraffe'
+        React.addons.TestUtils.Simulate.change(input);
+        TestUtils.Simulate.submit(form);
+
+    });
+
+    it('Should use name when provided', (done) => {
+        var joyStuff = [
+            Joi.string().label('First Name').meta({name: 'funky'}),
+        ]
+        var FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} onSubmit={(err, values) => {
+            expect(values).to.exist;
+            expect(values.funky).to.exist;
+            expect(values.firstName).to.not.exist;
+
+            done()
+        }}/>);
+        var form = TestUtils.findRenderedDOMComponentWithTag(FormComponent, 'form');
+        var input = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input')[0].getDOMNode();
+
+        input.value = 'giraffe'
+        React.addons.TestUtils.Simulate.change(input);
+        TestUtils.Simulate.submit(form);
+
+    });
     it('Should create a form containing one section', () => {
         var joiSchema = [
             Joi.string().label('field one'),

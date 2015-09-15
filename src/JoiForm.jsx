@@ -146,7 +146,7 @@ var Form = React.createClass({
         var schema = {};
         if(this.props.schema) {
             this.props.schema.forEach((fieldSchema) => {
-                schema[this._camelize(fieldSchema._settings.language.label)] = fieldSchema;
+                schema[fieldSchema._meta.name || this._camelize(fieldSchema._settings.language.label)] = fieldSchema;
             });
         }
 
@@ -164,7 +164,7 @@ var Form = React.createClass({
         if(this.props.schema) {
             this.props.schema.forEach((fieldSchema) => {
 
-                var name = this._camelize(fieldSchema._settings.language.label);
+                var name = fieldSchema._meta.name || this._camelize(fieldSchema._settings.language.label);
 
                 // if no value set for this field, but their is a default, set it
                 if(state.values[name] === undefined && fieldSchema._flags.default !== undefined) {
