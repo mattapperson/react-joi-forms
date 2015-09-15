@@ -19,6 +19,7 @@ var Basic =  React.createClass({
         Joi.boolean().label('Disabled').required().default(false),
         Joi.date().label('Start Date').required(),
         Joi.date().label('End Time').meta({mask:'time'}).required(),
+        Joi.object().label('File Upload').meta({type: 'file'})
     ],
     childContextTypes: {
         muiTheme: React.PropTypes.object

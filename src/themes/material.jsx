@@ -122,7 +122,6 @@ module.exports = {
         return (
             <div key={key} className={err ? 'input-error' : 'input'}>
                 <br />
-                {err}
                 <Component label={options.label}
                         {...options}
                        value={value || options.default}
