@@ -296,6 +296,14 @@ var Form = React.createClass({
         var value = e.target.value;
         var name = e.target.name;
 
+        // Dont validate if the field is empty and not required
+        if(typeof value === 'string' && value.length === 0 && this.state.schema[name]._flags.presence !== 'required') {
+            if(this.props.onBlur) {
+                this.props.onBlur(e);
+            }
+            return;
+        }
+
         Joi.validate(value, this.state.schema[name], (err, value) => {
             if(err) {
                 var formErrors= {};

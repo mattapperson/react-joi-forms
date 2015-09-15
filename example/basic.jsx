@@ -12,6 +12,7 @@ ThemeManager.setTheme(ThemeManager.types.LIGHT);
 var Basic =  React.createClass({
     joyStuff: [
         Joi.string().label('First Name').required().min(2),
+        Joi.string().label('Middle Name'),
         Joi.string().label('Password').meta({mask:'password'}).required().min(2),
         Joi.string().label('Last Name').valid(['Apperson', 'Moseman']),
         Joi.string().label('Bio').meta({type:'textArea'}).required(),

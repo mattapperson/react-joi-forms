@@ -56,6 +56,27 @@ describe('JoiForm', () => {
         React.addons.TestUtils.Simulate.blur(inputs[0]);
     });
 
+    it('Should not error for inputs that have no value when no rule requires a value', (done) => {
+        var joyStuff = [
+            Joi.string().label('First Name'),
+            Joi.string().label('Last Name'),
+        ]
+        var FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} onSubmit={(err, values) => {
+            expect(err).to.not.exist;
+            done()
+        }}/>);
+        var form = TestUtils.findRenderedDOMComponentWithTag(FormComponent, 'form');
+        var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
+
+        expect(inputs).to.exist;
+        expect(inputs.length).to.equal(2);
+        React.addons.TestUtils.Simulate.focus(inputs[0]);
+        React.addons.TestUtils.Simulate.blur(inputs[0]);
+        React.addons.TestUtils.Simulate.focus(inputs[1]);
+        TestUtils.Simulate.submit(form);
+
+    });
+
     it('Can use a custom input for the UI', () => {
         var joyStuff = [
             Joi.string().label('First Name')
