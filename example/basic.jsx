@@ -1,7 +1,6 @@
 var React = require('react');
-var {JoiForm, FormSection} = require('../src/index');
+var {JoiForm, FormSection, themes} = require('../src/index');
 var Joi = require('joi');
-var materialInputs = require('./material-inputs');
 var mui = require('material-ui');
 var ThemeManager = new mui.Styles.ThemeManager();
 var injectTapEventPlugin = require("react-tap-event-plugin");
@@ -41,7 +40,7 @@ var Basic =  React.createClass({
                     <br />
                     <br />
                 <JoiForm ref="form" schema={this.joyStuff}
-                        {...materialInputs}
+                        {...themes.material}
                         onChange={(e, formValues) => {
                             this.setState(formValues)
                         }}
