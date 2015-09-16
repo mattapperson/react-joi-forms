@@ -97,7 +97,6 @@ var FormSection = React.createClass({
                             });
                         break;
                         case 'select':
-                          console.log(optionValues)
                             options.enums = this.makeObject(optionNames, optionValues);
                         break;
                         case 'checkbox':
