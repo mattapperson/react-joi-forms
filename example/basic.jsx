@@ -15,6 +15,7 @@ var Basic =  React.createClass({
         Joi.string().label('Middle Name'),
         Joi.string().label('Password').meta({mask:'password'}).required().min(2),
         Joi.string().label('Last Name').valid(['Apperson', 'Moseman']),
+        Joi.string().label('Complex Dropdown').valid(['Matt', 'Andy']).meta({names: ['Matt Apperson', 'Andy Moseman']}),
         Joi.string().label('Bio').meta({type:'textArea'}).required(),
         Joi.boolean().label('Enabled').meta({mask:'toggle'}).required(),
         Joi.boolean().label('Disabled').required().default(false),

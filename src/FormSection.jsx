@@ -61,12 +61,7 @@ var FormSection = React.createClass({
                     var optionNames, optionValues;
 
                     if(fieldSchema._valids && fieldSchema._valids._set && fieldSchema._valids._set.length > 0) {
-                        if(fieldSchema._meta && fieldSchema._meta.names) {
-                            optionValues = fieldSchema._meta.names;
-                            delete fieldSchema._meta.names;
-                        } else {
-                            optionValues = fieldSchema._valids._set;
-                        }
+                        optionValues = fieldSchema._meta.names || fieldSchema._valids._set;
                         optionNames = fieldSchema._valids._set;
                         fieldType = 'select';
                     }
@@ -102,6 +97,7 @@ var FormSection = React.createClass({
                             });
                         break;
                         case 'select':
+                          console.log(optionValues)
                             options.enums = this.makeObject(optionNames, optionValues);
                         break;
                         case 'checkbox':
