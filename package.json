@@ -1,6 +1,6 @@
 {
   "name": "react-joi-forms",
-  "version": "1.3.3",
+  "version": "2.0.0",
   "description": "React forms from Joi schema",
   "main": "lib/index.js",
   "peerDependencies": {
@@ -18,7 +18,7 @@
     "prebuild": "rm -rf lib && rm -rf build",
     "build": "babel --stage 1 ./src --out-dir ./lib",
     "prepublish": "npm run build",
-    "dev-server": "webpack-dev-server --config ./example/server.config.js --hot --port 8881",
+    "dev": "webpack-dev-server --config ./example/server.config.js --hot --port 8881",
     "example": "webpack --config ./example/example.config.js"
   },
   "devDependencies": {
