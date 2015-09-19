@@ -83,9 +83,6 @@ describe('JoiForm', () => {
         ]
         var customInputs = {
             textComponent: (error, value, options, events) => {
-                var mask = options.masks[0] || 'text'
-                delete options.masks;
-
                 // your custom element here...
                 return (
                     <input {...options}
@@ -306,7 +303,7 @@ describe('JoiForm', () => {
 
     it('Should create a password text input', () => {
         var joyStuff = [
-            Joi.string().label('First Name').meta({mask: 'password'}).required()
+            Joi.string().label('First Name').meta({type: 'password'}).required()
         ];
         var values = {
             firstName: 'foo bar'
@@ -323,7 +320,7 @@ describe('JoiForm', () => {
 
     it('Should create an html5 email text input', () => {
         var joyStuff = [
-            Joi.string().email().label('Email Address').required()
+            Joi.string().email().label('Email Address').required().meta({type: 'email'})
         ];
         var FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} />);
         var form = TestUtils.findRenderedDOMComponentWithTag(FormComponent, 'form');
@@ -335,7 +332,7 @@ describe('JoiForm', () => {
 
     it('Should create a text area', () => {
         var joyStuff = [
-            Joi.string().label('First Name').meta({type: 'textArea'}).required()
+            Joi.string().label('First Name').meta({component: 'textArea'}).required()
         ];
         var values = {
             firstName: 'foo bar'
@@ -351,7 +348,7 @@ describe('JoiForm', () => {
 
     it('Should create a select box', () => {
         var joyStuff = [
-            Joi.string().label('Select Box').valid(['c', 'C'])
+            Joi.string().label('Select Box').valid(['c', 'C']).meta({component:'select'})
         ];
         var FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} />);
         var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'select');
@@ -368,12 +365,13 @@ describe('JoiForm', () => {
 
     it('Should create a select box with custom names', () => {
         var joyStuff = [
-            Joi.string().label('Select Box With Custom Names').valid(['c', 'C']).meta({names:['cat', 'Big Cat']})
+            Joi.string().label('Select Box With Custom Names').valid(['c', 'C']).meta({component:'select', names:['cat', 'Big Cat']})
         ];
         var FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} />);
         var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'select');
         var options = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'option');
 
+        expect(inputs[0]).to.exist
         expect(options[0]).to.exist
         expect(options.length).to.equal(2);
         expect(options[0].getDOMNode().value).to.equal('c');
@@ -385,7 +383,7 @@ describe('JoiForm', () => {
 
         it('Should create a check box', () => {
             var joyStuff = [
-                Joi.boolean().label('Check Box')
+                Joi.boolean().label('Check Box').meta({component: 'checkbox'})
             ];
             var FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} />);
             var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
@@ -398,7 +396,7 @@ describe('JoiForm', () => {
 
     it('Should create a file input', () => {
         var joyStuff = [
-            Joi.object().label('File Upload').meta({type: 'file'})
+            Joi.object().label('File Upload').meta({component: 'file'})
         ];
         var FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} />);
         var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
@@ -412,7 +410,7 @@ describe('JoiForm', () => {
         it('Should capture file input on drop event', (done) => {
             fileDropTest(function(fakeEvt, randomFile) {
                 var joyStuff = [
-                    Joi.object().label('File Upload').meta({type: 'file'})
+                    Joi.object().label('File Upload').meta({component: 'file'})
                 ];
                 var FormComponent = TestUtils.renderIntoDocument(
                     <Form schema={joyStuff}

@@ -13,15 +13,15 @@ var Basic =  React.createClass({
     joyStuff: [
         Joi.string().label('First Name').required().min(2),
         Joi.string().label('Middle Name'),
-        Joi.string().label('Password').meta({mask:'password'}).required().min(2),
-        Joi.string().label('Last Name').valid(['Apperson', 'Moseman']),
-        Joi.string().label('Complex Dropdown').valid(['Matt', 'Andy']).meta({names: ['Matt Apperson', 'Andy Moseman']}),
-        Joi.string().label('Bio').meta({type:'textArea'}).required(),
-        Joi.boolean().label('Enabled').meta({mask:'toggle'}).required(),
-        Joi.boolean().label('Disabled').required().default(false),
-        Joi.date().label('Start Date').required(),
-        Joi.date().label('End Time').meta({mask:'time'}).required(),
-        Joi.object().label('File Upload').meta({type: 'file'})
+        Joi.string().label('Password').meta({type:'password'}).required().min(2),
+        Joi.string().label('Last Name').valid(['Apperson', 'Moseman']).meta({component: 'select'}),
+        Joi.string().label('Complex Dropdown').valid(['Matt', 'Andy']).meta({component: 'select', names: ['Matt Apperson', 'Andy Moseman']}),
+        Joi.string().label('Bio').meta({component:'textArea'}).required(),
+        Joi.boolean().label('Enabled').meta({component: 'checkbox', type:'toggle'}).required(),
+        Joi.boolean().label('Disabled').required().default(false).meta({component: 'checkbox'}),
+        Joi.date().label('Start Date').required().meta({type:'date'}),
+        Joi.date().label('End Time').meta({type:'time'}).required(),
+        Joi.object().label('File Upload').meta({component: 'file'})
     ],
     childContextTypes: {
         muiTheme: React.PropTypes.object

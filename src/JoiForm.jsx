@@ -48,12 +48,6 @@ var Form = React.createClass({
         return {
             values: {},
             textComponent: (err, value, options, events) => {
-                var type = 'text';
-                if(['password', 'date', 'email'].indexOf(options.masks[0]) !== -1) {
-                    type = options.masks[0];
-                }
-
-                delete options.masks;
                 var key = options.key;
                 delete options.key;
 
@@ -61,7 +55,7 @@ var Form = React.createClass({
                     <div key={key} className={err ? 'input-error' : 'input-no-error'}>
                         {err}
                         <input {...options}
-                               type={type}
+                               type={options.type}
                                value={value}
                                onChange={events.onChange}
                                onFocus={events.onFocus}
