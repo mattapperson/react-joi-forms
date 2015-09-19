@@ -15,7 +15,7 @@ A library that lets you create forms easily and painlessly from [Joi](http://git
  - "It just works" out of the box!
  - Supports complex custom form layouts and field-sets
  - Works with any/all React UI libraries (material-ui, react-bootstrap...)
- - Works with ReactNative (not tested *yet* but it should...)
+ - Works with ReactNative (not tested *yet* but it should with nothing more then a custom theme...)
  - Flexible enough to build your own amazing UX
 
 
@@ -139,4 +139,46 @@ plugins: [
 where server/lib/shim.js is an empty file... This just removes the dependencies for some advanced email validation. Email validation still works, just it sticks to the text validation, not testing to see if the domain is real.
 
 
-### Full API docs coming next week... it's time for me to start my weekend :)
+## API
+
+### JoiForm props
+|Property   	   |Description   	|
+|---	           |---	        |
+|schema   	       |(Required) An array of Joi validations|
+|values            |(optional) An object containing key/value representations of the fields and their values|
+|onSubmit  	       |(optional) A function passed in to receive the submit event from the form, props are function(error, valuesObject)|
+|onChange          |(optional) A function passed in to receive a change event from the form, props are `function(error, fieldValueObject)`
+|textComponent     |(optional) A method called for each input component of this type, just return a React component. Method signature is `function(err, value, options, events)`|
+|selectComponent   |(optional) A method called for each input component of this type, just return a React component. Method signature is `function(err, value, options, events)`|
+|textAreaComponent |(optional) A method called for each input component of this type, just return a React component. Method signature is `function(err, value, options, events)`|
+|radioComponent    |(optional) A method called for each input component of this type, just return a React component. Method signature is `function(err, value, options, events)`|
+|checkboxComponent |(optional) A method called for each input component of this type, just return a React component. Method signature is `function(err, value, options, events)`|
+|fileComponent     |(optional) A method called for each input component of this type, just return a React component. Method signature is `function(err, value, options, events)`|
+
+### JoiForm methods
+
+|Method      |Description                              |
+|---	     |---	                                   |
+|submit()    |Calling this method will submit the form |
+
+### FormSection props
+|Property      |Description   	|
+|---	       |---	        |
+|tag   	       |(optional) A string to id what fields belong in this section, if no tag is provided, all fields will be used|
+
+### Using the Joi meta API to define inputs
+By default all validations use the text input component. We use the meta field to augment this default.
+For example the following would use a textarea component:
+
+```js
+Joi.string().meta({component: 'textarea'})
+```
+These are all the supported props withing the meta field
+
+### Joi validation meta props
+|Property   	   |Description   	|
+|---	           |---	        |
+|component   	   |A string to choose what input component you would like to use (defailt: text)|
+|type   	       |A string declairing what input component subtype you would like to use (if any), for example `password` or `email`|
+|names   	       |An array of strings denoting the displayed content of a select field (requires the use of the joi valid API for the values, array indexes match the value to the text)|
+|name              |manualy set the field name, defaults to a cammel-case of the field label|
