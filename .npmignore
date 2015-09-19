@@ -1,1 +1,6 @@
-
+src
+tests
+example
+karma.conf.js
+node_modules
+.travis
