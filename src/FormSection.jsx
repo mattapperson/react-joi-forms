@@ -52,18 +52,19 @@ var FormSection = React.createClass({
                         fieldSchema._meta = this._merge(fieldSchema._meta);
                     }
 
-                    // Order of setting fieldType:
-                    // 1: default to 'text'
-                    // 2: Use switch statment to alter that based on fields schema
-                    // 3: Allow override of defaults
-                    var fieldType = this._getFieldType(fieldSchema);
+                    var fieldComponent = fieldSchema._meta.component || 'text';
                     var fieldName = fieldSchema._meta.name || this._camelize(fieldSchema._settings.language.label);
                     var optionNames, optionValues;
+
+                    if(fieldComponent === 'select') {
+                        if(!fieldSchema._valids || !fieldSchema._valids._set || !fieldSchema._valids._set.length === 0) {
+                            return console.error(`${fieldName} is a select component but no 'valid' params are provided, field is ignored`);
+                        }
+                    }
 
                     if(fieldSchema._valids && fieldSchema._valids._set && fieldSchema._valids._set.length > 0) {
                         optionValues = fieldSchema._meta.names || fieldSchema._valids._set;
                         optionNames = fieldSchema._valids._set;
-                        fieldType = 'select';
                     }
 
                     var options = {
@@ -72,39 +73,19 @@ var FormSection = React.createClass({
                         name: fieldName,
                         label: fieldSchema._settings.language.label,
                         key: fieldName,
+                        allowed: optionValues,
                         default: fieldSchema._flags ? fieldSchema._flags.default : undefined
                     };
 
-                    switch(fieldType) {
+                    switch(fieldComponent) {
                         case 'text':
                             options.placeholder = fieldSchema._examples[0] || undefined;
-
-                            options.masks = [].concat(fieldSchema._meta.masks || []);
-                            if(fieldSchema._type === 'date' && options.masks[0] !== 'time') {
-                                options.masks.push('date');
-                            } else if(fieldSchema._type === 'date') {
-                                options.masks.push('time');
-                            }
-                            if(options.mask) {
-                                options.masks.push(options.mask);
-                                delete options.mask;
-                            }
-
-                            fieldSchema._tests.forEach((test) => {
-                                if(test.name) {
-                                    options.masks.push(test.name);
-                                }
-                            });
                         break;
                         case 'select':
                             options.enums = this.makeObject(optionNames, optionValues);
                         break;
                         case 'checkbox':
-                            options.masks = [].concat(fieldSchema._meta.masks || []);
-                            if(options.mask) {
-                                options.masks.push(options.mask);
-                                delete options.mask;
-                            }
+
                         break;
                         case 'textArea':
 
@@ -114,14 +95,14 @@ var FormSection = React.createClass({
                         break;
                     }
 
-                    if(!context[fieldType + "Component"]) {
-                        console.error('[JoiForm Error] The requested input type of ' + fieldType + ' does not have a defined component');
+                    if(!context[`${fieldComponent}Component`]) {
+                        console.error('[JoiForm Error] The requested input type of ' + fieldComponent + ' does not have a defined component');
                         return (
-                            <span>Input type {fieldType} does not have a defined component type</span>
+                            <span>Input type {fieldComponent} does not have a defined component type</span>
                         )
                     }
 
-                    return context[fieldType + "Component"](context.getErrors(fieldName), context.getValue(fieldName), options, {
+                    return context[`${fieldComponent}Component`](context.getErrors(fieldName), context.getValue(fieldName), options, {
                         onChange: this.__onChange,
                         onFocus: this.__onFocus,
                         onBlur: this.__onBlur
@@ -144,21 +125,6 @@ var FormSection = React.createClass({
             });
         });
         return obj;
-    },
-    _getFieldType(fieldSchema) {
-        if(fieldSchema._meta && fieldSchema._meta.type) {
-            return fieldSchema._meta.type
-        }
-
-        if(fieldSchema._valids && fieldSchema._valids._set && fieldSchema._valids._set.length) {
-            return 'select';
-        }
-
-        if(['array', 'boolean'].indexOf(fieldSchema._type) !== -1) {
-            return 'checkbox';
-        }
-
-        return 'text';
     },
     __onChange(e) {
         e.preventDefault();
