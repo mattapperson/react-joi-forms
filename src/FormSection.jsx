@@ -127,7 +127,9 @@ var FormSection = React.createClass({
         return obj;
     },
     __onChange(e) {
-        e.preventDefault();
+        if(e.preventDefault) {
+            e.preventDefault();
+        }
 
         var context = this.parentContext().joiForm;
 

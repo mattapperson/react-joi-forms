@@ -9,16 +9,10 @@ var {TextField,
 
 module.exports = {
     textComponent: (err, value, options, events) => {
-        var type = 'text';
-        if(['password', 'date', 'email', 'time'].indexOf(options.masks[0]) !== -1) {
-            type = options.masks[0];
-        }
-
-        delete options.masks;
         var key = options.key;
         delete options.key;
 
-        if(type === 'date') {
+        if(options.type === 'date') {
             return (
                 <div key={key} className={err ? 'input-error' : 'input-no-error'}>
                     <br />
@@ -48,7 +42,7 @@ module.exports = {
                     floatingLabelText={options.label}
 
                         {...options}
-                       type={type}
+                       type={options.type}
                        value={value}
                        errorText={err}
                        onChange={events.onChange}
@@ -109,7 +103,7 @@ module.exports = {
         )
     },
     checkboxComponent: (err, value, options, events) => {
-        var type = type = options.masks[0] || 'checkbox';
+        var type = type = options.type || 'checkbox';
         var key = options.key;
         delete options.key;
         var Component;
@@ -151,7 +145,6 @@ module.exports = {
         );
     },
     fileComponent: (err, value, options, events) => {
-        options.type = 'file';
         var key = options.key;
         delete options.key;
 
@@ -159,6 +152,7 @@ module.exports = {
             <div key={key} className={err ? 'input-error' : 'input'}>
                 {err}
                 <input {...options}
+                       type='file'
                        onChange={events.onChange}
                        onFocus={events.onFocus}
                        onBlur={events.onBlur} />
