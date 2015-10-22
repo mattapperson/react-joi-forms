@@ -1,4 +1,5 @@
 var React = require('react');
+var ReactDom = require('react-dom');
 
 
 beforeEach(function() {
@@ -26,5 +27,5 @@ afterEach(function() {
    * Unmount the component after each test.
    */
 
-  React.unmountComponentAtNode(this.container);
+  ReactDom.unmountComponentAtNode(this.container);
 });

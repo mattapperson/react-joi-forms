@@ -3,22 +3,10 @@ var Joi = require('joi');
 
 var FormSection = React.createClass({
     // Cant be used until we get 0.14.x
-    // contextTypes: {
-    //     schema: React.PropTypes.array,
-    //     values: React.PropTypes.object,
-    //     onChange: React.PropTypes.func,
-    //     textComponent: React.PropTypes.func,
-    //     selectComponent: React.PropTypes.func,
-    //     textAreaComponent: React.PropTypes.func,
-    //     radioComponent: React.PropTypes.func,
-    //     checkboxComponent: React.PropTypes.func,
-    //     fileComponent: React.PropTypes.func
-    // },
-
-    // This is here to support react 0.13.x
-    parentContext() {
-        return this._reactInternalInstance._context;
+    contextTypes: {
+        joiForm: React.PropTypes.object
     },
+
     makeObject(list, values) {
         if (!list) return {};
         var result = {};
@@ -28,7 +16,7 @@ var FormSection = React.createClass({
         return result;
     },
     render() {
-        var context = this.parentContext().joiForm;
+        var context = this.context.joiForm;
         var fields;
 
         if(context.schema) {
@@ -131,7 +119,7 @@ var FormSection = React.createClass({
             e.preventDefault();
         }
 
-        var context = this.parentContext().joiForm;
+        var context = this.context.joiForm;
 
         var files = e.dataTransfer ? e.dataTransfer.files : e.target.files;
         var values = {};
@@ -149,14 +137,14 @@ var FormSection = React.createClass({
         }
     },
     __onFocus(e) {
-        var context = this.parentContext().joiForm;
+        var context = this.context.joiForm;
 
         if(context.onFocus) {
             context.onFocus(e);
         }
     },
     __onBlur(e) {
-        var context = this.parentContext().joiForm;
+        var context = this.context.joiForm;
 
         if(context.onBlur) {
             context.onBlur(e);

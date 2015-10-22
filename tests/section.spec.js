@@ -18,7 +18,7 @@ describe('FormSection', () => {
             done()
         }}/>);
         var form = TestUtils.findRenderedDOMComponentWithTag(FormComponent, 'form');
-        var input = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input')[0].getDOMNode();
+        var input = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input')[0];
 
         input.value = 'giraffe'
         React.addons.TestUtils.Simulate.change(input);
@@ -38,7 +38,7 @@ describe('FormSection', () => {
             done()
         }}/>);
         var form = TestUtils.findRenderedDOMComponentWithTag(FormComponent, 'form');
-        var input = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input')[0].getDOMNode();
+        var input = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input')[0];
 
         input.value = 'giraffe'
         React.addons.TestUtils.Simulate.change(input);
@@ -141,8 +141,8 @@ describe('FormSection', () => {
         );
         var form = TestUtils.findRenderedDOMComponentWithTag(FormComponent, 'form');
         var sections = TestUtils.scryRenderedComponentsWithType(FormComponent, FormSection);
-        var sectionOneInput = TestUtils.scryRenderedDOMComponentsWithTag(sections[0], 'input')[0].getDOMNode();
-        var sectionTwoInput = TestUtils.scryRenderedDOMComponentsWithTag(sections[1], 'input')[0].getDOMNode();
+        var sectionOneInput = TestUtils.scryRenderedDOMComponentsWithTag(sections[0], 'input')[0];
+        var sectionTwoInput = TestUtils.scryRenderedDOMComponentsWithTag(sections[1], 'input')[0];
 
         expect(sections.length).to.equal(2);
 
@@ -190,8 +190,8 @@ describe('FormSection', () => {
         var form = TestUtils.findRenderedDOMComponentWithTag(FormComponent, 'form');
         var sections = TestUtils.scryRenderedComponentsWithType(FormComponent, FormSection);
         var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
-        var sectionOneInput = TestUtils.scryRenderedDOMComponentsWithTag(sections[0], 'input')[0].getDOMNode();
-        var sectionTwoInput = TestUtils.scryRenderedDOMComponentsWithTag(sections[1], 'input')[0].getDOMNode();
+        var sectionOneInput = TestUtils.scryRenderedDOMComponentsWithTag(sections[0], 'input')[0];
+        var sectionTwoInput = TestUtils.scryRenderedDOMComponentsWithTag(sections[1], 'input')[0];
 
         expect(sections.length).to.equal(2);
         expect(inputs.length).to.equal(2);

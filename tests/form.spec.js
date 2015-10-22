@@ -9,8 +9,7 @@ describe('JoiForm', () => {
 
     it('Should create an empty form object', () => {
         var FormComponent = TestUtils.renderIntoDocument(<Form />);
-
-        expect(FormComponent.getDOMNode().tagName).to.equal('FORM');
+        expect(FormComponent._reactInternalInstance._renderedComponent._currentElement.type).to.equal('form');
     });
 
     it('Should create a form object with one input', () => {
@@ -22,7 +21,7 @@ describe('JoiForm', () => {
 
         expect(inputs).to.exist;
         expect(inputs.length).to.equal(1);
-        expect(inputs[0].getDOMNode().type).to.equal('text');
+        expect(inputs[0].type).to.equal('text');
     });
 
     it('Should fire the onFocus events for input', (done) => {
@@ -100,7 +99,7 @@ describe('JoiForm', () => {
 
         expect(inputs).to.exist;
         expect(inputs.length).to.equal(1);
-        expect(inputs[0].getDOMNode().id).to.equal('funky');
+        expect(inputs[0].id).to.equal('funky');
     });
 
     it('Should submit a form object with one input, and pass the forms data to onSubmit', (done) => {
@@ -115,7 +114,7 @@ describe('JoiForm', () => {
             done();
         }} />);
         var form = TestUtils.findRenderedDOMComponentWithTag(FormComponent, 'form');
-        var input = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input')[0].getDOMNode();
+        var input = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input')[0];
 
         input.value = 'giraffe'
         React.addons.TestUtils.Simulate.change(input);
@@ -155,8 +154,8 @@ describe('JoiForm', () => {
         var form = TestUtils.findRenderedDOMComponentWithTag(FormComponent, 'form');
         var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
 
-        expect(inputs[0].getDOMNode().type).to.equal('text');
-        expect(inputs[0].getDOMNode().value).to.equal('foo bar');
+        expect(inputs[0].type).to.equal('text');
+        expect(inputs[0].value).to.equal('foo bar');
 
     });
 
@@ -187,11 +186,11 @@ describe('JoiForm', () => {
         }
         FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} {...customInputs} />);
         inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
-        firstInput = inputs[0].getDOMNode();
+        firstInput = inputs[0];
 
-        expect(inputs[0].getDOMNode().type).to.equal('text');
+        expect(inputs[0].type).to.equal('text');
 
-        var testInput = inputs[0].getDOMNode();
+        var testInput = inputs[0];
         testInput.value = 'giraffe'
         React.addons.TestUtils.Simulate.change(testInput);
 
@@ -224,11 +223,11 @@ describe('JoiForm', () => {
         }
         FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} {...customInputs} />);
         inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
-        firstInput = inputs[0].getDOMNode()
+        firstInput = inputs[0];
 
-        expect(inputs[0].getDOMNode().type).to.equal('text');
+        expect(inputs[0].type).to.equal('text');
 
-        var testInput = inputs[0].getDOMNode();
+        var testInput = inputs[0];
         testInput.value = 'giraffe'
         React.addons.TestUtils.Simulate.change(testInput);
         React.addons.TestUtils.Simulate.blur(testInput);
@@ -269,11 +268,11 @@ describe('JoiForm', () => {
         }
         FormComponent = TestUtils.renderIntoDocument(<Form schema={joyStuff} {...customInputs} />);
         inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
-        firstInput = inputs[0].getDOMNode()
+        firstInput = inputs[0];
 
-        expect(inputs[0].getDOMNode().type).to.equal('text');
+        expect(inputs[0].type).to.equal('text');
 
-        var testInput = inputs[0].getDOMNode();
+        var testInput = inputs[0];
         testInput.value = 'giraffe';
         React.addons.TestUtils.Simulate.change(testInput);
 
@@ -296,7 +295,7 @@ describe('JoiForm', () => {
             var form = TestUtils.findRenderedDOMComponentWithTag(FormComponent, 'form');
             var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
 
-            expect(inputs[0].getDOMNode().placeholder).to.equal('this is a placeholder');
+            expect(inputs[0].placeholder).to.equal('this is a placeholder');
 
         });
     }
@@ -313,8 +312,8 @@ describe('JoiForm', () => {
         var form = TestUtils.findRenderedDOMComponentWithTag(FormComponent, 'form');
         var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
 
-        expect(inputs[0].getDOMNode().type).to.equal('password');
-        expect(inputs[0].getDOMNode().value).to.equal('foo bar');
+        expect(inputs[0].type).to.equal('password');
+        expect(inputs[0].value).to.equal('foo bar');
 
     });
 
@@ -326,7 +325,7 @@ describe('JoiForm', () => {
         var form = TestUtils.findRenderedDOMComponentWithTag(FormComponent, 'form');
         var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
 
-        expect(inputs[0].getDOMNode().type).to.equal('email');
+        expect(inputs[0].type).to.equal('email');
 
     });
 
@@ -355,12 +354,12 @@ describe('JoiForm', () => {
         var options = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'option');
 
         expect(inputs[0]).to.exist
-        expect(inputs[0].getDOMNode().name).to.equal('selectBox');
+        expect(inputs[0].name).to.equal('selectBox');
 
         expect(options[0]).to.exist
         expect(options.length).to.equal(2);
-        expect(options[0].getDOMNode().value).to.equal('c');
-        expect(options[0].getDOMNode().text).to.equal('c');
+        expect(options[0].value).to.equal('c');
+        expect(options[0].text).to.equal('c');
     });
 
     it('Should create a select box with custom names', () => {
@@ -374,8 +373,8 @@ describe('JoiForm', () => {
         expect(inputs[0]).to.exist
         expect(options[0]).to.exist
         expect(options.length).to.equal(2);
-        expect(options[0].getDOMNode().value).to.equal('c');
-        expect(options[0].getDOMNode().text).to.equal('cat');
+        expect(options[0].value).to.equal('c');
+        expect(options[0].text).to.equal('cat');
     });
 
     // For some reason, jsdom is leaking this test into the rest of the system...
@@ -389,7 +388,7 @@ describe('JoiForm', () => {
             var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
 
             expect(inputs[0]).to.exist
-            expect(inputs[0].getDOMNode().type).to.equal('checkbox');
+            expect(inputs[0].type).to.equal('checkbox');
         });
 
     }
@@ -402,7 +401,7 @@ describe('JoiForm', () => {
         var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
 
         expect(inputs[0]).to.exist
-        expect(inputs[0].getDOMNode().type).to.equal('file');
+        expect(inputs[0].type).to.equal('file');
     });
 
     if(!process || !process.env.ENV_JSDOM) {
@@ -422,8 +421,8 @@ describe('JoiForm', () => {
                 var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
 
                 expect(inputs[0]).to.exist;
-                expect(inputs[0].getDOMNode().type).to.equal('file');
-                TestUtils.Simulate.change(inputs[0].getDOMNode(), fakeEvt);
+                expect(inputs[0].type).to.equal('file');
+                TestUtils.Simulate.change(inputs[0], fakeEvt);
             });
 
         });

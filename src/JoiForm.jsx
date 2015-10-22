@@ -2,7 +2,7 @@ var React = require('react');
 var Joi = require('joi');
 var FormSection = require('./FormSection');
 
-var Form = React.createClass({
+var JoiForm = React.createClass({
     propTypes: {
         schema: React.PropTypes.array,
         values: React.PropTypes.object,
@@ -337,4 +337,4 @@ var Form = React.createClass({
     }
 });
 
-module.exports = Form;
+module.exports = JoiForm;
