@@ -1,6 +1,6 @@
 {
   "name": "react-joi-forms",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "React forms from Joi schema",
   "main": "lib/index.js",
   "peerDependencies": {
