@@ -207,7 +207,7 @@ var JoiForm = React.createClass({
         )
     },
 
-    submit() {
+    submit(e) {
         if(!this.props.onSubmit) return;
 
         Joi.validate(this.state.values, this.state.schema, {abortEarly: false}, (err, value) => {
@@ -220,11 +220,11 @@ var JoiForm = React.createClass({
                 this.setState({
                     errors: formErrors
                 }, () => {
-                    this.props.onSubmit(formErrors);
+                    this.props.onSubmit(formErrors, null, e);
                 });
                 return;
             }
-            this.props.onSubmit(null, this.state.values);
+            this.props.onSubmit(null, this.state.values, e);
         });
 
     },
