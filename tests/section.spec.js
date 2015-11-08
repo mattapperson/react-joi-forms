@@ -117,7 +117,7 @@ describe('FormSection', () => {
 
     });
 
-    it('Should create a form with a section contain 0 fields', () => {
+    it('Should create a form with a section containing 0 fields', () => {
         var joiSchema = [
             Joi.string().label('field one').tags('section1'),
             Joi.string().label('field one').tags('section2')
