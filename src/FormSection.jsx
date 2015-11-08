@@ -19,11 +19,13 @@ var FormSection = React.createClass({
         var context = this.context.joiForm;
         var fields;
 
-        if(context.schema) {
+        if(this.props.tag === undefined) fields = context.schema; // if no tag is passed as prop, sections display everything
+
+        else if(context.schema && this.props.tag) {
             fields = context.schema.filter((field) => {
                 return field._tags.indexOf(this.props.tag) !== -1;
             });
-            if(fields.length < 1) fields = context.schema; // if no tags, sections display everything
+            if(fields.length < 1) fields = null; // if tag does not match tag(s) in schema, render nothing
         }
 
         return (

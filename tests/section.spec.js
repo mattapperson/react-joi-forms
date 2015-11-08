@@ -117,6 +117,24 @@ describe('FormSection', () => {
 
     });
 
+    it('Should create a form with a section containing 0 fields', () => {
+        var joiSchema = [
+            Joi.string().label('field one').tags('section1'),
+            Joi.string().label('field one').tags('section2')
+        ];
+        var FormComponent = TestUtils.renderIntoDocument(
+            <Form schema={joiSchema}>
+                <FormSection tag="foo" />
+            </Form>
+        );
+        var sections = TestUtils.scryRenderedComponentsWithType(FormComponent, FormSection);
+        var inputs = TestUtils.scryRenderedDOMComponentsWithTag(FormComponent, 'input');
+
+        expect(sections.length).to.equal(1);
+        expect(inputs.length).to.equal(0);
+
+    });
+
     it('Should create a form containing two sections but both values should be returned', (done) => {
         var joiSchema = [
             Joi.string().label('field one').tags('section1'),
