@@ -8,6 +8,7 @@ var JoiForm = React.createClass({
         values: React.PropTypes.object,
         onSubmit: React.PropTypes.func,
         onChange: React.PropTypes.func,
+        validateOpts: React.PropTypes.object,
         textComponent: React.PropTypes.func,
         selectComponent: React.PropTypes.func,
         textAreaComponent: React.PropTypes.func,
@@ -27,6 +28,7 @@ var JoiForm = React.createClass({
                 onChange: this.__onChange,
                 onFocus: this.__onFocus,
                 onBlur: this.__onBlur,
+                validateOpts: this.props.validateOpts,
                 textComponent: this.props.textComponent,
                 selectComponent: this.props.selectComponent,
                 textAreaComponent: this.props.textAreaComponent,
@@ -210,7 +212,7 @@ var JoiForm = React.createClass({
     submit(e) {
         if(!this.props.onSubmit) return;
 
-        Joi.validate(this.state.values, this.state.schema, {abortEarly: false}, (err, value) => {
+        Joi.validate(this.state.values, this.state.schema, {abortEarly: false, ...this.props.validateOpts}, (err, value) => {
             if(err) {
                 var formErrors= {};
                 err.details.forEach((inputError) => {
