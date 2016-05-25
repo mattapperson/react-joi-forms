@@ -72,6 +72,7 @@ var FormSection = React.createClass({
                             options.placeholder = fieldSchema._examples[0] || undefined;
                         break;
                         case 'select':
+                        case 'select2':
                             options.enums = this.makeObject(optionNames, optionValues);
                         break;
                         case 'checkbox':
@@ -94,6 +95,7 @@ var FormSection = React.createClass({
 
                     return context[`${fieldComponent}Component`](context.getErrors(fieldName), context.getValue(fieldName), options, {
                         onChange: this.__onChange,
+                        onSelect2Search: this.__onSelect2Search,
                         onFocus: this.__onFocus,
                         onBlur: this.__onBlur
                     })
@@ -136,6 +138,20 @@ var FormSection = React.createClass({
             change[e.target.name] = values[e.target.name];
 
             context.onChange(e, change);
+        }
+    },
+    __onSelect2Search(e) {
+        if(e.preventDefault) {
+            e.preventDefault();
+        }
+
+        var context = this.context.joiForm;
+
+        if(context.onSelect2Search) {
+            var change = {};
+            change[e.target.name] = values[e.target.name];
+
+            context.onSelect2Search(e, change);
         }
     },
     __onFocus(e) {

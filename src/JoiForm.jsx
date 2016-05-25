@@ -8,7 +8,7 @@ var JoiForm = React.createClass({
         values: React.PropTypes.object,
         onSubmit: React.PropTypes.func,
         onChange: React.PropTypes.func,
-        prevDefault: React.propTypes.bool,
+        prevDefault: React.PropTypes.bool,
         validateOpts: React.PropTypes.object,
         textComponent: React.PropTypes.func,
         selectComponent: React.PropTypes.func,
@@ -146,7 +146,9 @@ var JoiForm = React.createClass({
         var schema = {};
         if(this.props.schema) {
             this.props.schema.forEach((fieldSchema) => {
-                schema[fieldSchema._meta.name || this._camelize(fieldSchema._settings.language.label)] = fieldSchema;
+                var meta = fieldSchema._meta[0] || fieldSchema._meta;
+                var fieldName = meta.name || this._camelize(fieldSchema._settings.language.label);
+                schema[fieldName] = fieldSchema;
             });
         }
 
@@ -164,7 +166,8 @@ var JoiForm = React.createClass({
         if(this.props.schema) {
             this.props.schema.forEach((fieldSchema) => {
 
-                var name = fieldSchema._meta.name || this._camelize(fieldSchema._settings.language.label);
+                var meta = fieldSchema._meta[0] || fieldSchema._meta;
+                var name = meta.name || this._camelize(fieldSchema._settings.language.label);
 
                 // if no value set for this field, but their is a default, set it
                 if(state.values[name] === undefined && fieldSchema._flags.default !== undefined) {
@@ -187,7 +190,9 @@ var JoiForm = React.createClass({
         var schema = {};
         if(nextProps.schema) {
             nextProps.schema.forEach((fieldSchema) => {
-                schema[this._camelize(fieldSchema._settings.language.label)] = fieldSchema;
+                var meta = fieldSchema._meta[0] || fieldSchema._meta;
+                var fieldName = meta.name || this._camelize(fieldSchema._settings.language.label);
+                schema[fieldName] = fieldSchema;
             });
         }
 
@@ -234,12 +239,6 @@ var JoiForm = React.createClass({
             this.props.onSubmit(null, this.state.values, e);
         });
 
-    },
-    _camelize(str) {
-        return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match, index) {
-            if (+match === 0) return ""; // or if (/\s+/.test(match)) for white spaces
-            return index == 0 ? match.toLowerCase() : match.toUpperCase();
-        });
     },
     __onChange(e, values) {
         var name = e.target.name;
