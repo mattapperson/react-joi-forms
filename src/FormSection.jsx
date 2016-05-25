@@ -149,7 +149,7 @@ var FormSection = React.createClass({
 
         if(context.onSelect2Search) {
             var change = {};
-            change[e.target.name] = values[e.target.name];
+            change[e.target.name] = e.target.value;
 
             context.onSelect2Search(e, change);
         }

@@ -8,10 +8,12 @@ var JoiForm = React.createClass({
         values: React.PropTypes.object,
         onSubmit: React.PropTypes.func,
         onChange: React.PropTypes.func,
+        onSelect2Search: React.PropTypes.func,
         prevDefault: React.PropTypes.bool,
         validateOpts: React.PropTypes.object,
         textComponent: React.PropTypes.func,
         selectComponent: React.PropTypes.func,
+        select2Component: React.PropTypes.func,
         textAreaComponent: React.PropTypes.func,
         radioComponent: React.PropTypes.func,
         checkboxComponent: React.PropTypes.func,
@@ -27,12 +29,14 @@ var JoiForm = React.createClass({
                 getValue: this.__getValue,
                 getErrors: this.__getErrors,
                 onChange: this.__onChange,
+                onSelect2Search: this.__onSelect2Search,
                 onFocus: this.__onFocus,
                 onBlur: this.__onBlur,
                 prevDefault: this.props.prevDefault,
                 validateOpts: this.props.validateOpts,
                 textComponent: this.props.textComponent,
                 selectComponent: this.props.selectComponent,
+                select2Component: this.props.select2Component,
                 textAreaComponent: this.props.textAreaComponent,
                 radioComponent: this.props.radioComponent,
                 checkboxComponent: this.props.checkboxComponent,
@@ -286,6 +290,11 @@ var JoiForm = React.createClass({
             });
         }
 
+    },
+    __onSelect2Search(e, change) {
+        if(this.props.onSelect2Search) {
+            this.props.onSelect2Search(e, change);
+        }
     },
     __onFocus(e) {
         if(this.props.onFocus) {
