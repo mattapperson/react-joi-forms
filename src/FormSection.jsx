@@ -42,19 +42,25 @@ var FormSection = React.createClass({
                         fieldSchema._meta = this._merge(fieldSchema._meta);
                     }
 
+                    var multiField = fieldSchema._meta.multi;
+                    const schemaForValids = multiField ? fieldSchema._inner.items[0] : fieldSchema;
+                    if (schemaForValids._meta.length > 0) {
+                        schemaForValids._meta = this._merge(schemaForValids._meta);
+                    }
+
                     var fieldComponent = fieldSchema._meta.component || 'text';
                     var fieldName = fieldSchema._meta.name || this._camelize(fieldSchema._settings.language.label);
                     var optionNames, optionValues;
 
-                    if(fieldComponent === 'select') {
-                        if(!fieldSchema._valids || !fieldSchema._valids._set || !fieldSchema._valids._set.length === 0) {
-                            return console.error(`${fieldName} is a select component but no 'valid' params are provided, field is ignored`);
+                    if(fieldComponent === 'select' || fieldComponent === 'select2') {
+                        if(!schemaForValids._valids || !schemaForValids._valids._set || !schemaForValids._valids._set.length === 0) {
+                            return console.error(`${fieldName} is a ${fieldComponent} ${multiField ? 'with multiple values' : ''} component but no 'valid' params are provided, field is ignored`);
                         }
                     }
 
-                    if(fieldSchema._valids && fieldSchema._valids._set && fieldSchema._valids._set.length > 0) {
-                        optionValues = fieldSchema._meta.names || fieldSchema._valids._set;
-                        optionNames = fieldSchema._valids._set;
+                    if(schemaForValids._valids && schemaForValids._valids._set && schemaForValids._valids._set.length > 0) {
+                        optionValues = schemaForValids._meta.names || schemaForValids._valids._set;
+                        optionNames = schemaForValids._valids._set;
                     }
 
                     var options = {

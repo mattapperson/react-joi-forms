@@ -144,7 +144,9 @@ var JoiForm = React.createClass({
     shouldComponentUpdate(nextProps, nextState) {
 
         // dont re-render for schema state change, all others still should
-        return nextState.schema === this.state.schema;
+        // return nextState.schema === this.state.schema;
+        // mehiel: WHY is the above correct / useful?
+        return true;
     },
     componentDidMount() {
         var schema = {};
