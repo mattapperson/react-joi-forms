@@ -17,7 +17,8 @@ var JoiForm = React.createClass({
         textAreaComponent: React.PropTypes.func,
         radioComponent: React.PropTypes.func,
         checkboxComponent: React.PropTypes.func,
-        fileComponent: React.PropTypes.func
+        fileComponent: React.PropTypes.func,
+        formComponent: React.PropTypes.func
     },
     childContextTypes: {
         joiForm: React.PropTypes.object
@@ -40,7 +41,8 @@ var JoiForm = React.createClass({
                 textAreaComponent: this.props.textAreaComponent,
                 radioComponent: this.props.radioComponent,
                 checkboxComponent: this.props.checkboxComponent,
-                fileComponent: this.props.fileComponent
+                fileComponent: this.props.fileComponent,
+                formComponent: this.props.formComponent
             }
         };
     },
@@ -208,20 +210,19 @@ var JoiForm = React.createClass({
         });
     },
     render() {
-
-        if(this.props.children) {
+        if (this.props.inline) {
             return (
-                <form onSubmit={this.submit}>
-                    {this.props.children}
-                </form>
-            )
+                <div>
+                    {this.props.children || <FormSection />}
+                </div>
+            );
         }
 
         return (
             <form onSubmit={this.submit}>
-                <FormSection />
+                {this.props.children || <FormSection />}
             </form>
-        )
+        );
     },
 
     submit(e) {
@@ -250,12 +251,17 @@ var JoiForm = React.createClass({
         var name = e.target.name;
         var value = e.target.value;
 
-        var newState = {
-            values: {
-                ...this.state.values,
-                ...values
-            },
-        };
+        var newState = { values: this.state.values };
+        Object.keys(values).forEach(k => {
+          const isArrayKey = k.match(/([\w-]+)\[(\d+)\]/); // matches 'fieldname[1]' like keys
+          if (isArrayKey) {
+            const key = isArrayKey[1];
+            const index = parseInt(isArrayKey[2]);
+            newState.values[key][index] = values[k];
+          } else {
+            newState.values[k] = values[k];
+          }
+        })
 
         if(this.state.errors && this.state.errors[name]) {
             Joi.validate(value, this.state.schema[name], (err, value) => {
