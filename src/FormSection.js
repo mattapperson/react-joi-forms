@@ -1,4 +1,4 @@
-import { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import Joi from 'joi';
 import { merge, makeObject, camelize, getTaggedFields, assertSchema } from './utils';
 
@@ -34,7 +34,7 @@ const __onEvent = (handler) => (e) => {
   if (handler) handler(e);
 };
 
-class FormSection extends Component ({
+class FormSection extends Component {
   static propTypes = {
     tag: string,
   };
@@ -61,7 +61,7 @@ class FormSection extends Component ({
           schemaForValids._meta = merge(schemaForValids._meta);
 
           const fieldComponent = fieldSchema._meta.component || 'text';
-          const fieldName = fieldSchema._meta.name || this._camelize(fieldSchema._settings.language.label);
+          const fieldName = fieldSchema._meta.name || camelize(fieldSchema._settings.language.label);
 
           const isEnumerated = (fieldComponent === 'select' || fieldComponent === 'select2');
           const hasValidsSet = schemaForValids._valids && schemaForValids._valids._set && schemaForValids._valids._set.length > 0;
@@ -71,7 +71,7 @@ class FormSection extends Component ({
           }
 
           let optionNames, optionValues;
-          if(hasValidsSet) {
+          if (hasValidsSet) {
             optionValues = schemaForValids._meta.names || schemaForValids._valids._set;
             optionNames = schemaForValids._valids._set;
           }
@@ -93,7 +93,7 @@ class FormSection extends Component ({
 
             case 'select':
             case 'select2':
-              options.enums = this.makeObject(optionNames, optionValues);
+              options.enums = makeObject(optionNames, optionValues);
             break;
 
             case 'form':
@@ -107,7 +107,7 @@ class FormSection extends Component ({
           }
 
           const fieldComponentCreator = context[`${fieldComponent}Component`];
-          if(!fieldComponentCreator) {
+          if (!fieldComponentCreator) {
             debug('[JoiForm Error] The requested input type of ' + fieldComponent + ' does not have a defined component');
             return ( <span>Input type {fieldComponent} does not have a defined component type</span> );
           }
@@ -125,7 +125,7 @@ class FormSection extends Component ({
         })}
       </div>
     );
-  },
-})
+  }
+};
 
 export default FormSection;
