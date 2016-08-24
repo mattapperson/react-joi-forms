@@ -2,8 +2,6 @@ import React from 'react'
 import { render } from 'react-dom';
 import { JoiForm, FormSection, themes } from '../src/index';
 import Joi from 'joi'
-import ThemeManager from 'material-ui/lib/styles/theme-manager';
-import { LightRawTheme } from 'material-ui/lib/styles';
 var injectTapEventPlugin = require("react-tap-event-plugin");
 var Inspector = require('react-json-inspector');
 
@@ -29,14 +27,6 @@ var Basic =  React.createClass({
         Joi.date().label('End Time').meta({type:'time'}).required(),
         Joi.object().label('File Upload').meta({component: 'file'})
     ],
-    childContextTypes: {
-        muiTheme: React.PropTypes.object
-    },
-    getChildContext() {
-        return {
-            muiTheme: ThemeManager.getMuiTheme(LightRawTheme),
-        };
-    },
     submit() {
         this.refs.form.submit();
     },
