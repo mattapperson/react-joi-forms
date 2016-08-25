@@ -62,7 +62,7 @@
   "author": "Matt Apperson",
   "license": "MIT",
   "dependencies": {
-    "joi": "^6.6.1",
+    "joi": "^9.0.4",
     "material-ui": "^0.13.0",
     "react-tap-event-plugin": "^0.2.1"
   }

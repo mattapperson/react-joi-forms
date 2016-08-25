@@ -65,7 +65,7 @@ class FormSection extends Component {
           schemaForValids._meta = merge(schemaForValids._meta);
 
           const fieldComponent = fieldSchema._meta.component || 'text';
-          const fieldName = fieldSchema._meta.name || camelize(fieldSchema._settings.language.label);
+          const fieldName = fieldSchema._meta.name || camelize(fieldSchema._flags.label);
 
           const isEnumerated = (fieldComponent === 'select' || fieldComponent === 'select2');
           const hasValidsSet = schemaForValids._valids && schemaForValids._valids._set && schemaForValids._valids._set.length > 0;
@@ -84,7 +84,7 @@ class FormSection extends Component {
             ...fieldSchema._meta,
             required: fieldSchema._flags.presence === 'required',
             name: fieldName,
-            label: fieldSchema._settings.language.label,
+            label: fieldSchema._flags.label,
             key: fieldName,
             allowed: optionValues,
             default: fieldSchema._flags ? fieldSchema._flags.default : undefined

@@ -50,7 +50,7 @@ class JoiForm extends Component {
 
     state.schema.forEach((fieldSchema) => {
       const meta = merge(fieldSchema._meta);
-      const name = meta.name || camelize(fieldSchema._settings.language.label);
+      const name = meta.name || camelize(fieldSchema._flags.label);
 
       // if no value set for this field, but their is a default, set it
       const hasDefault = state.values[name] === undefined && fieldSchema._flags.default !== undefined;
@@ -117,7 +117,7 @@ class JoiForm extends Component {
   componentDidMount() {
     let  schema = {};
     if (this.props.schema) {
-      schema = reduce(this.props.schema, (acc, x) => ({...acc, [x._meta.name || camelize(x._settings.language.label)]: x}), {})
+      schema = reduce(this.props.schema, (acc, x) => ({...acc, [x._meta.name || camelize(x._flags.label)]: x}), {})
     }
     this.setState({ ...this.state, schema});
   }
@@ -125,7 +125,7 @@ class JoiForm extends Component {
   componentWillReceiveProps(nextProps) {
     let schema = {};
     if (nextProps.schema) {
-      schema = reduce(nextProps.schema, (acc, x) => ({...acc, [x._meta.name || camelize(x._settings.language.label)]: x}), {})
+      schema = reduce(nextProps.schema, (acc, x) => ({...acc, [x._meta.name || camelize(x._flags.label)]: x}), {})
     }
     this.setState({ ...this.state, schema });
   }
