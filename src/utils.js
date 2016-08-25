@@ -35,3 +35,20 @@ export function assertSchema(schema) {
     throw new Error('All joi-react-form elements MUST have a label or a name meta key/value');
   }
 }
+
+export function defaultValues (schema, values) {
+  return reduce(schema, (acc, fieldSchema) => {
+    const meta = merge(fieldSchema._meta);
+    const name = meta.name || camelize(fieldSchema._flags.label);
+    let vs = {}
+    // if no value set for this field, but their is a default, set it
+    const hasDefault = values[name] === undefined && fieldSchema._flags.default !== undefined;
+    if (hasDefault) vs[name] = fieldSchema._flags.default;
+
+    // if no value set for this field, but is boolean, set it to false
+    const setBoolean = values[name] === undefined && fieldSchema._type === 'boolean';
+    if (setBoolean) vs[name] = false;
+
+    return {...acc, ...vs}
+  }, {})
+}
