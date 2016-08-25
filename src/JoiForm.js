@@ -13,6 +13,7 @@ class JoiForm extends Component {
     onSubmit: func,
     onChange: func,
     onSelect2Search: func,
+    onAutocompleteSearch: func,
     prevDefault: bool,
     validateOpts: object,
     textComponent: func,
@@ -22,7 +23,8 @@ class JoiForm extends Component {
     radioComponent: func,
     checkboxComponent: func,
     fileComponent: func,
-    formComponent: func
+    formComponent: func,
+    autocompleteComponent: func,
   };
 
   static childContextTypes = {
@@ -76,6 +78,7 @@ class JoiForm extends Component {
       checkboxComponent,
       fileComponent,
       formComponent,
+      autocompleteComponent,
     } = this.props;
 
     return {
@@ -86,6 +89,7 @@ class JoiForm extends Component {
         onSelect2Search: this.__onSelect2Search,
         onFocus: this.__onFocus,
         onBlur: this.__onBlur,
+        onAutocompleteSearch: this.__onAutocompleteSearch,
 
         schema,
         prevDefault,
@@ -98,6 +102,7 @@ class JoiForm extends Component {
         checkboxComponent,
         fileComponent,
         formComponent,
+        autocompleteComponent,
       }
     };
   }
@@ -189,6 +194,11 @@ class JoiForm extends Component {
   __onFocus = (e) => {
     const handler = this.props.onFocus || noop;
     handler(e);
+  }
+
+  __onAutocompleteSearch = (searchText, dataSource) => {
+    const handler = this.props.onAutocompleteSearch || noop;
+    handler(searchText, dataSource)
   }
 
   __onBlur = (e) => {
