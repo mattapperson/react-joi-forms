@@ -30,6 +30,10 @@ const __onSelect2Search = (handler) => (e) => {
   handler(e, change);
 };
 
+const __onAutocompleteSearch = (handler) => (searchText, dataSource) => {
+  if (handler) handler(searchText, dataSource)
+};
+
 const __onEvent = (handler) => (e) => {
   if (handler) handler(e);
 };
@@ -46,7 +50,7 @@ class FormSection extends Component {
   render() {
     const { tag } = this.props;
     const { joiForm: context } = this.context;
-    const { schema, onChange, onSelect2Search, onFocus, onBlur } = context;
+    const { schema, onChange, onSelect2Search, onAutocompleteSearch, onFocus, onBlur } = context;
 
     const fields = (tag === undefined) ? schema : getTaggedFields(schema, tag);
 
@@ -117,6 +121,7 @@ class FormSection extends Component {
           const fieldEvents = {
             onChange: __onChange(onChange),
             onSelect2Search: __onSelect2Search(onSelect2Search),
+            onAutocompleteSearch: __onAutocompleteSearch(onAutocompleteSearch),
             onFocus: __onEvent(onFocus),
             onBlur: __onEvent(onBlur),
           };

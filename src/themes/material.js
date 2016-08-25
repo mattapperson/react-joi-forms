@@ -6,6 +6,7 @@ import RadioButtonGroup from 'material-ui/lib/radio-button-group';
 import RadioButton from 'material-ui/lib/radio-button';
 import {DatePicker} from 'material-ui/lib/date-picker';
 import Toggle from 'material-ui/lib/toggle';
+import AutoComplete from 'material-ui/lib/auto-complete';
 
 
 const components = {
@@ -137,7 +138,41 @@ const components = {
                  onBlur={events.onBlur} />
       </div>
     );
-  }
+  },
+  autocompleteComponent: (err, value, options, events) => {
+    const { label, dataSource, dataSourceConfig } = options;
+    const onNewRequestHandler = (chosenRequest, index) => {
+      const e = {
+        preventDefault: () => {},
+        target: {
+          name: options.name || options.label,
+          value: chosenRequest,
+          index: index,
+        },
+      };
+      events.onChange(e);
+    };
+
+    const onUpdateInputHandler = (searchText, dataSource) => {
+      events.onAutocompleteSearch(searchText, options.name);
+    };
+
+    return (
+        <div className={err ? 'input-error' : 'input'}>
+            {err}
+            <AutoComplete
+              floatingLabelText={label}
+              filter={AutoComplete.noFilter}
+              openOnFocus
+              fullWidth
+              dataSource={dataSource}
+              onNewRequest={(chosenRequest, index) => onNewRequestHandler(chosenRequest)}
+              onUpdateInput={onUpdateInputHandler}
+              dataSourceConfig={dataSourceConfig}
+            />
+        </div>
+    );
+  },
 }
 
 export default components;
