@@ -1,7 +1,8 @@
-import { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import Joi from 'joi';
 import FormSection from './FormSection';
 import { merge, camelize, reduce, keys, noop } from './utils';
+import { components } from './themes/html5';
 
 const { array, object, func, bool } = PropTypes;
 
@@ -28,7 +29,41 @@ class JoiForm extends Component {
     joiForm: object
   };
 
+  static defaultProps = {
+    validateOpts: {},
+    prevDefault: true,
+    values: {},
+    ...components
+  }
+
+  constructor(props) {
+    super(props)
+    let state = {}
+
+    const { schema = [], values } = props;
+
+    state.values = values
+    state.schema = schema
+    state.errors = {}
+
+    state.schema.forEach((fieldSchema) => {
+      const meta = merge(fieldSchema._meta);
+      const name = meta.name || camelize(fieldSchema._settings.language.label);
+
+      // if no value set for this field, but their is a default, set it
+      const hasDefault = state.values[name] === undefined && fieldSchema._flags.default !== undefined;
+      if (hasDefault) state.values[name] = fieldSchema._flags.default;
+
+      // if no value set for this field, but is boolean, set it to false
+      const setBoolean = state.values[name] === undefined && fieldSchema._type === 'boolean';
+      if (setBoolean) state.values[name] = false;
+    });
+
+    this.state = state
+  }
+
   getChildContext() {
+
     const {
       schema,
       prevDefault,
@@ -67,14 +102,6 @@ class JoiForm extends Component {
     };
   }
 
-  getDefaultProps() {
-    return {
-      validateOpts: {},
-      prevDefault: true,
-      values: {},
-    };
-  }
-
   shouldComponentUpdate(nextProps, nextState) {
     // dont re-render for schema state change, all others still should
     // return nextState.schema === this.state.schema;
@@ -83,45 +110,18 @@ class JoiForm extends Component {
   }
 
   componentDidMount() {
-    const schema = reduce(schema, (acc, { _meta, _settings }) => {
-      const meta = merge(_meta);
-      const fieldName = meta.name || camelize(_settings.language.label);
-      acc[fieldName] = fieldSchema;
-    }, {});
-
-    this.setState({ ...this.state, schema });
-  }
-
-  getInitialState() {
-    const { schema = [], values } = this.props;
-    const state = { schema: {}, values };
-
-    schema.forEach((fieldSchema) => {
-      const meta = merge(fieldSchema._meta);
-      const name = meta.name || this._camelize(fieldSchema._settings.language.label);
-
-      // if no value set for this field, but their is a default, set it
-      const hasDefault = state.values[name] === undefined && fieldSchema._flags.default !== undefined;
-      if (hasDefault) state.values[name] = fieldSchema._flags.default;
-
-      // if no value set for this field, but is boolean, set it to false
-      const setBoolean = state.values[name] === undefined && fieldSchema._type === 'boolean';
-      if (setBoolean) state.values[name] = false;
-    });
-
-    return state;
+    let  schema = {};
+    if (this.props.schema) {
+      schema = reduce(this.props.schema, (acc, x) => ({...acc, [x._meta.name || camelize(x._settings.language.label)]: x}), {})
+    }
+    this.setState({ ...this.state, schema});
   }
 
   componentWillReceiveProps(nextProps) {
-    const nextSchema = nextProps.schema || [];
-
-    // transform nextSchema to obj schema
-    const schema = reduce(nextSchema, (acc, {_meta, _settings}) => {
-        const meta = _meta[0] || _meta;
-        const fieldName = meta.name || camelize(_settings.language.label);
-        acc[fieldName] = fieldSchema;
-      }, {});
-
+    let schema = {};
+    if (nextProps.schema) {
+      schema = reduce(nextProps.schema, (acc, x) => ({...acc, [x._meta.name || camelize(x._settings.language.label)]: x}), {})
+    }
     this.setState({ ...this.state, schema });
   }
 
@@ -133,16 +133,16 @@ class JoiForm extends Component {
     return vnode;
   }
 
-  submit(e) {
+  submit = (e) => {
     const { validateOpts, onSubmit, prevDefault } = this.props;
     const { values, schema } = this.state;
 
-    if(!onSubmit) return;
-    if(prevDefault) e.preventDefault();
+    if (!onSubmit) return;
+    if (prevDefault && e) e.preventDefault();
 
     Joi.validate(values, schema, {abortEarly: false, ...validateOpts}, (err, value) => {
       if(err) {
-        const errors= reduce(err.details, (acc, { path, message }) => acc[camelize(path)] = message, {})
+        const errors = reduce(err.details, (acc, n) => ({...acc, [camelize(n.path)]: n.message}), {})
         this.setState({ errors }, () => onSubmit(errors, null, e));
         return;
       }
@@ -150,7 +150,7 @@ class JoiForm extends Component {
     });
   }
 
-  __onChange(e, values) {
+  __onChange = (e, values) => {
     const { name, value } = e.target;
     const newState = { values: this.state.values };
 
@@ -162,7 +162,7 @@ class JoiForm extends Component {
         const index = parseInt(isArrayKey[2]);
         acc.values[key][index] = values[valKey];
       } else {
-        acc.values[k] = values[k];
+        acc.values[valKey] = values[valKey];
       }
     }, newState);
 
@@ -174,30 +174,30 @@ class JoiForm extends Component {
     }
 
     Joi.validate(value, schema[name], (err, value) => {
-      const formErrors = err ? reduce(err.details, (acc, { path, message }) => acc[camelize(path)] = message, {}) : {}
+      const formErrors = err ? reduce(err.details, (acc, n) => ({...acc, [camelize(n.path)]: n.message}), {}) : {}
       newState.errors = { ...errors, ...formErrors };
       if (!err) delete newState.errors[name];
       this.setState(newState, () => onChange(e, newState.values));
     });
   }
 
-  __onSelect2Search(e, change) {
+  __onSelect2Search = (e, change) => {
     const handler = this.props.onSelect2Search || noop;
     handler(e, change);
   }
 
-  __onFocus(e) {
+  __onFocus = (e) => {
     const handler = this.props.onFocus || noop;
     handler(e);
   }
 
-  __onBlur(e) {
+  __onBlur = (e) => {
     const { name, value } = e.target;
     const { schema } = this.state;
     const onBlur = this.props.onBlur || noop;
 
     // Dont validate if the field is empty and not required
-    if(value === '' && schema[name]._flags.presence !== 'required') {
+    if (value === '' && schema[name]._flags.presence !== 'required') {
       onBlur(e);
       return;
     }
@@ -207,21 +207,21 @@ class JoiForm extends Component {
         onBlur(e);
         return;
       }
-
-      const formErrors = reduce(err.details, (acc, { path, message }) => acc[camelize(path)] = message, {});
-      this.setState({ errors: { ...errors, ...formErrors } }, () => onBlur(e));
+      const formErrors = reduce(err.details, (acc, n) => ({...acc, [camelize(n.path)]: n.message}), {})
+      this.setState({ errors: { ...this.state.errors, ...formErrors } }, () => onBlur(e));
     });
   }
 
-  __getErrors(fieldName) {
+  __getErrors = (fieldName) => {
     const data = this.state.errors;
     return (fieldName) ? data && data[fieldName] : data;
   }
 
-  __getValue(fieldName) {
+  __getValue = (fieldName) => {
     const data = this.state.values;
     return (fieldName) ? data && data[fieldName] : data;
   }
 }
+
 
 export default JoiForm;

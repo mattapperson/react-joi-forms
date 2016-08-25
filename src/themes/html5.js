@@ -1,3 +1,4 @@
+import React from 'react'
 const components = {
   textComponent: (err, value, options, events) => {
     const key = options.key;

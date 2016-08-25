@@ -1,17 +1,19 @@
-import TextField from 'material-ui/lib/TextField';
-import SelectField from 'material-ui/lib/Select';
-import Checkbox from 'material-ui/lib/Checkbox';
-import RadioButtonGroup from 'material-ui/lib/RadioButtonGroup';
-import RadioButton from 'material-ui/lib/RadioButton';
-import DatePicker from 'material-ui/lib/DatePicker';
-import Toggle from 'material-ui/lib/Toggle';
+import React from 'react'
+import TextField from 'material-ui/lib/text-field';
+import SelectField from 'material-ui/lib/select-field';
+import Checkbox from 'material-ui/lib/checkbox';
+import RadioButtonGroup from 'material-ui/lib/radio-button-group';
+import RadioButton from 'material-ui/lib/radio-button';
+import {DatePicker} from 'material-ui/lib/date-picker';
+import Toggle from 'material-ui/lib/toggle';
+
 
 const components = {
   textComponent: (err, value, options, events) => {
     const key = options.key;
     delete options.key;
 
-    if(options.type === 'date') {
+    if (options.type === 'date') {
       return (
         <div key={key} className={err ? 'input-error' : 'input-no-error'}>
           <br />
@@ -32,6 +34,7 @@ const components = {
       )
     }
 
+
     return (
       <div key={key} className={err ? 'input-error' : 'input-no-error'}>
         <TextField fullWidth
@@ -48,7 +51,7 @@ const components = {
     )
   },
   selectComponent: (err, value, options, events) => {
-    const { key, enums } = options;
+    const { key, enums = {} } = options;
     delete options.enums
     delete options.key;
 

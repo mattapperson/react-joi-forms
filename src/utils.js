@@ -7,7 +7,7 @@ export const assign = Object.assign.bind(Object);
 export const noop = () => {};
 
 export function makeObject(list = [], values) {
-  return reduce(list, (acc, val, i) => (acc[val] = values[i]), {});
+  return reduce(list, (acc, val, i) => ({...acc, [val]: values[i]}), {});
 }
 
 export function merge(obj) {
@@ -27,11 +27,11 @@ export function getTaggedFields(schema = [], tag) {
 }
 
 export function assertSchema(schema) {
-  if(!fieldSchema.isJoi) {
+  if(!schema.isJoi) {
     throw new Error('An array of Joi objects is what we expect for joi-react-forms.');
   }
 
-  if(!fieldSchema._settings.language || !fieldSchema._settings.language.label) {
+  if(!schema._settings.language || !schema._settings.language.label) {
     throw new Error('All joi-react-form elements MUST have a label or a name meta key/value');
   }
 }
