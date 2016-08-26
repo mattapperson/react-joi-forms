@@ -17,7 +17,6 @@ var Basic =  React.createClass({
 
     joyStuff: [
         Joi.string().label('First Name').required().min(2),
-        Joi.string().label('Middle Name').meta({name: 'middlename'}),
         Joi.string().label('Password').meta({type:'password', name: 'password'}).required().min(2),
         Joi.string().label('Last Name').valid(['Apperson', 'Moseman']).meta({component: 'select'}),
         Joi.string().label('Complex Dropdown').valid(['Matt', 'Andy']).meta({component: 'select', names: ['Matt Apperson', 'Andy Moseman']}),
@@ -38,13 +37,15 @@ var Basic =  React.createClass({
                 <JoiForm ref="form" schema={this.joyStuff}
                         values={this.state.values}
                         errors={this.state.errors}
+                        controlled={true}
                         {...themes.material}
                         onChange={(e, formValues) => {
-                            this.setState({values: formValues})
+                          this.setState({values: formValues})
                         }}
                         onSubmit={(e, formValues) => {
 
-                        }}/>
+                        }}
+                        />
                     <button onClick={this.submit}>Test</button>
             </div>
         );

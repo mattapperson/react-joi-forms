@@ -56,13 +56,14 @@
     "webpack-dev-server": "^1.12.1"
   },
   "repository": {
-      "type" : "git",
-      "url" : "https://github.com/appersonlabs/react-joi-forms"
+    "type": "git",
+    "url": "https://github.com/appersonlabs/react-joi-forms"
   },
   "author": "Matt Apperson",
   "license": "MIT",
   "dependencies": {
     "joi": "^9.0.4",
+    "lodash.isequal": "^4.4.0",
     "material-ui": "^0.13.0",
     "react-tap-event-plugin": "^0.2.1"
   }
