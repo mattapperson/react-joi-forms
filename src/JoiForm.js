@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import Joi from 'joi';
 import FormSection from './FormSection';
 import { merge, camelize, reduce, keys, noop, defaultValues } from './utils';
+import isEqual from 'lodash.isequal'
 import { components } from './themes/html5';
 
 const { array, object, func, bool } = PropTypes;
@@ -11,6 +12,7 @@ class JoiForm extends Component {
     schema: array.isRequired,
     values: object,
     errors: object,
+    controlled: bool,
     onSubmit: func,
     onChange: func,
     onSelect2Search: func,
@@ -46,7 +48,10 @@ class JoiForm extends Component {
 
     const { schema = [], values, errors } = props;
 
-    state.schema = reduce(schema, (acc, x) => ({...acc, [x._meta.name || camelize(x._flags.label)]: x}), {})
+    state.schema = reduce(schema, (acc, x) => {
+      const meta = merge(x._meta);
+      return {...acc, [meta.name || camelize(x._flags.label)]: x}
+    }, {})
     state.errors = errors
     state.values = { ...defaultValues(schema, values), ...values}
     this.state = state
@@ -96,17 +101,28 @@ class JoiForm extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    // dont re-render for schema state change, all others still should
-    // return nextState.schema === this.state.schema;
-    // mehiel: WHY is the above correct / useful?
-    return true;
+    const { controlled } = this.props
+    const schemasEqual = nextState.schema === this.state.schema
+    const valuesEqual = isEqual(nextState.values, this.state.values)
+
+    // if controlled = true -> rerender
+    // if controlled = false -> rerender if values changed or schema changed
+    if (controlled) return true
+    return !schemasEqual || !valuesEqual
   }
 
   componentWillReceiveProps(nextProps) {
-    const schema = reduce(nextProps.schema, (acc, x) => ({...acc, [x._meta.name || camelize(x._flags.label)]: x}), {})
-    const values = {...this.state.values, ...nextProps.values}
-    const errors = {...this.state.errors, ...nextProps.errors}
-    this.setState({ ...this.state, schema, values, errors });
+    const schema = reduce(nextProps.schema, (acc, x) => {
+      const meta = merge(x._meta);
+      return {...acc, [meta.name || camelize(x._flags.label)]: x}
+    }, {})
+    if (this.props.controlled) {
+      const values = {...this.state.values, ...nextProps.values}
+      const errors = {...this.state.errors, ...nextProps.errors}
+      this.setState({ ...this.state, schema, values, errors });
+    } else {
+      this.setState({ ...this.state, schema});
+    }
   }
 
   render() {
@@ -137,6 +153,7 @@ class JoiForm extends Component {
   __onChange = (e, values) => {
     const { name, value } = e.target;
     const newState = { values: this.state.values };
+    const { controlled } = this.props
 
     // update newState values with event values
     reduce(keys(values), (acc, valKey) => {
@@ -153,15 +170,25 @@ class JoiForm extends Component {
     const onChange = this.props.onChange || noop;
     const { schema, errors } = this.state;
     if(!errors || !errors[name]) {
-      this.setState(newState, () => onChange(e, newState.values));
-      return;
+      if (controlled) {
+        // don't update values in the state
+        onChange(e, newState.values)
+        return
+      } else {
+        this.setState(newState, () => onChange(e, newState.values));
+      }
     }
 
     Joi.validate(value, schema[name], (err, value) => {
-      const formErrors = err ? reduce(err.details, (acc, n) => ({...acc, [camelize(n.path)]: n.message}), {}) : {}
+      const formErrors = err ? reduce(err.details, (acc, n) => ({...acc, [name]: n.message}), {}) : {}
       newState.errors = { ...errors, ...formErrors };
       if (!err) delete newState.errors[name];
-      this.setState(newState, () => onChange(e, newState.values));
+      if (controlled) {
+        // don't update values in the state
+        this.setState({errors: newState.errors}, () => onChange(e, newState.values))
+      } else {
+        this.setState(newState, () => onChange(e, newState.values));
+      }
     });
   }
 
@@ -196,7 +223,7 @@ class JoiForm extends Component {
         onBlur(e);
         return;
       }
-      const formErrors = reduce(err.details, (acc, n) => ({...acc, [camelize(n.path)]: n.message}), {})
+      const formErrors = reduce(err.details, (acc, n) => ({...acc, [name]: n.message}), {})
       this.setState({ errors: { ...this.state.errors, ...formErrors } }, () => onBlur(e));
     });
   }
