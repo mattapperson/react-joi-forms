@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import Joi from 'joi';
 import FormSection from './FormSection';
-import { merge, camelize, reduce, keys, noop } from './utils';
+import { merge, camelize, reduce, keys, noop, defaultValues } from './utils';
 import { components } from './themes/html5';
 
 const { array, object, func, bool } = PropTypes;
@@ -10,6 +10,7 @@ class JoiForm extends Component {
   static propTypes = {
     schema: array.isRequired,
     values: object,
+    errors: object,
     onSubmit: func,
     onChange: func,
     onSelect2Search: func,
@@ -35,6 +36,7 @@ class JoiForm extends Component {
     validateOpts: {},
     prevDefault: true,
     values: {},
+    errors: {},
     ...components
   }
 
@@ -42,25 +44,11 @@ class JoiForm extends Component {
     super(props)
     let state = {}
 
-    const { schema = [], values } = props;
+    const { schema = [], values, errors } = props;
 
-    state.values = values
-    state.schema = schema
-    state.errors = {}
-
-    state.schema.forEach((fieldSchema) => {
-      const meta = merge(fieldSchema._meta);
-      const name = meta.name || camelize(fieldSchema._flags.label);
-
-      // if no value set for this field, but their is a default, set it
-      const hasDefault = state.values[name] === undefined && fieldSchema._flags.default !== undefined;
-      if (hasDefault) state.values[name] = fieldSchema._flags.default;
-
-      // if no value set for this field, but is boolean, set it to false
-      const setBoolean = state.values[name] === undefined && fieldSchema._type === 'boolean';
-      if (setBoolean) state.values[name] = false;
-    });
-
+    state.schema = reduce(schema, (acc, x) => ({...acc, [x._meta.name || camelize(x._flags.label)]: x}), {})
+    state.errors = errors
+    state.values = { ...defaultValues(schema, values), ...values}
     this.state = state
   }
 
@@ -114,20 +102,11 @@ class JoiForm extends Component {
     return true;
   }
 
-  componentDidMount() {
-    let  schema = {};
-    if (this.props.schema) {
-      schema = reduce(this.props.schema, (acc, x) => ({...acc, [x._meta.name || camelize(x._flags.label)]: x}), {})
-    }
-    this.setState({ ...this.state, schema});
-  }
-
   componentWillReceiveProps(nextProps) {
-    let schema = {};
-    if (nextProps.schema) {
-      schema = reduce(nextProps.schema, (acc, x) => ({...acc, [x._meta.name || camelize(x._flags.label)]: x}), {})
-    }
-    this.setState({ ...this.state, schema });
+    const schema = reduce(nextProps.schema, (acc, x) => ({...acc, [x._meta.name || camelize(x._flags.label)]: x}), {})
+    const values = {...this.state.values, ...nextProps.values}
+    const errors = {...this.state.errors, ...nextProps.errors}
+    this.setState({ ...this.state, schema, values, errors });
   }
 
   render() {

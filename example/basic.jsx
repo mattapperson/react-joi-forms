@@ -10,7 +10,8 @@ injectTapEventPlugin();
 var Basic =  React.createClass({
     getInitialState() {
       return {
-        values: {}
+        values: {},
+        errors: {},
       }
     },
 
@@ -35,6 +36,8 @@ var Basic =  React.createClass({
         return (
             <div>
                 <JoiForm ref="form" schema={this.joyStuff}
+                        values={this.state.values}
+                        errors={this.state.errors}
                         {...themes.material}
                         onChange={(e, formValues) => {
                             this.setState({values: formValues})
