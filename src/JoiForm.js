@@ -117,7 +117,8 @@ class JoiForm extends Component {
       return {...acc, [meta.name || camelize(x._flags.label)]: x}
     }, {})
     if (this.props.controlled) {
-      const values = {...this.state.values, ...nextProps.values}
+      const isNextValuesEmpty = keys(nextProps.values).length === 0
+      const values = isNextValuesEmpty ? {} : {...this.state.values, ...nextProps.values}
       const errors = {...this.state.errors, ...nextProps.errors}
       this.setState({ ...this.state, schema, values, errors });
     } else {
