@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import Joi from 'joi';
+import Joi from 'joi-browser';
 import FormSection from './FormSection';
 import { merge, camelize, reduce, keys, noop, defaultValues } from './utils';
 import isEqual from 'lodash.isequal'

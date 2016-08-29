@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import Joi from 'joi';
+import Joi from 'joi-browser';
 import { merge, makeObject, camelize, getTaggedFields, assertSchema } from './utils';
 
 const { object, string } = PropTypes;
