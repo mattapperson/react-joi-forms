@@ -67,12 +67,19 @@ class FormSection extends Component {
           const fieldComponent = fieldSchema._meta.component || 'text';
           const fieldName = fieldSchema._meta.name || camelize(fieldSchema._flags.label);
 
-          const isEnumerated = (fieldComponent === 'select' || fieldComponent === 'select2');
           const hasValidsSet = schemaForValids._valids && schemaForValids._valids._set && schemaForValids._valids._set.length > 0;
-          if (isEnumerated && !hasValidsSet) {
-            debug(`${fieldName} is a ${fieldComponent} ${multiField ? 'with multiple values' : ''} component but no 'valid' params are provided, field is ignored`);
-            return null;
-          }
+          // ---
+          // NOTE: commenting the code below for hotfixing but leaving it here for further review.
+          // We shouldn't hide components without valids set because schemas and data are
+          // dynamic. We may change the valids of one component based on the another inputs
+          // text, thus hiding and showing is not optimal regarding UX
+          // ---
+          // const isEnumerated = (fieldComponent === 'select' || fieldComponent === 'select2');
+          // if (isEnumerated && !hasValidsSet) {
+          //   debug(`${fieldName} is a ${fieldComponent} ${multiField ? 'with multiple values' : ''} component but no 'valid' params are provided, field is ignored`);
+          //   return null;
+          // }
+          // ---
 
           let optionNames, optionValues;
           if (hasValidsSet) {
