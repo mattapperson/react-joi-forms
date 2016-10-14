@@ -61,6 +61,7 @@ var FormSection = React.createClass({
                         ...fieldSchema._meta,
                         required: fieldSchema._flags.presence === 'required',
                         name: fieldName,
+                        type: fieldSchema._type,
                         label: fieldSchema._settings.language.label,
                         key: fieldName,
                         allowed: optionValues,
