@@ -172,11 +172,12 @@ class JoiForm extends Component {
     const { schema, errors } = this.state;
     if(!errors || !errors[name]) {
       if (controlled) {
-        // don't update values in the state
-        onChange(e, newState.values)
-        return
+        onChange(e, newState.values);
+        this.setState(newState);
+        return;
       } else {
-        this.setState(newState, () => onChange(e, newState.values));
+        onChange(e, newState.values);
+        this.setState(newState);
       }
     }
 
@@ -185,10 +186,11 @@ class JoiForm extends Component {
       newState.errors = { ...errors, ...formErrors };
       if (!err) delete newState.errors[name];
       if (controlled) {
-        // don't update values in the state
-        this.setState({errors: newState.errors}, () => onChange(e, newState.values))
+        onChange(e, newState.values);
+        this.setState(newState);
       } else {
-        this.setState(newState, () => onChange(e, newState.values));
+        onChange(e, newState.values);
+        this.setState(newState);
       }
     });
   }
