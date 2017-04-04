@@ -1,5 +1,11 @@
-exports.JoiForm = require('./JoiForm');
-exports.FormSection = require('./FormSection');
-exports.themes = {
-    material: require('./themes/material')
+import html5 from './themes/html5';
+import material from './themes/material';
+
+export const themes = {
+  html5,
+  material,
 };
+
+export JoiForm from './JoiForm';
+export FormSection from './FormSection';
+export * as utils from './utils';

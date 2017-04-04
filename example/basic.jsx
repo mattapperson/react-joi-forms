@@ -1,19 +1,23 @@
-var React = require('react');
-var {JoiForm, FormSection, themes} = require('../src/index');
-var Joi = require('joi');
-var mui = require('material-ui');
-var ThemeManager = new mui.Styles.ThemeManager();
+import React from 'react'
+import { render } from 'react-dom';
+import { JoiForm, FormSection, themes } from '../src/index';
+import Joi from 'joi'
 var injectTapEventPlugin = require("react-tap-event-plugin");
 var Inspector = require('react-json-inspector');
 
 injectTapEventPlugin();
-ThemeManager.setTheme(ThemeManager.types.LIGHT);
 
 var Basic =  React.createClass({
+    getInitialState() {
+      return {
+        values: {},
+        errors: {},
+      }
+    },
+
     joyStuff: [
         Joi.string().label('First Name').required().min(2),
-        Joi.string().label('Middle Name'),
-        Joi.string().label('Password').meta({type:'password'}).required().min(2),
+        Joi.string().label('Password').meta({type:'password', name: 'password'}).required().min(2),
         Joi.string().label('Last Name').valid(['Apperson', 'Moseman']).meta({component: 'select'}),
         Joi.string().label('Complex Dropdown').valid(['Matt', 'Andy']).meta({component: 'select', names: ['Matt Apperson', 'Andy Moseman']}),
         Joi.string().label('Bio').meta({component:'textArea'}).required(),
@@ -23,14 +27,6 @@ var Basic =  React.createClass({
         Joi.date().label('End Time').meta({type:'time'}).required(),
         Joi.object().label('File Upload').meta({component: 'file'})
     ],
-    childContextTypes: {
-        muiTheme: React.PropTypes.object
-    },
-    getChildContext() {
-        return {
-            muiTheme: ThemeManager.getCurrentTheme()
-        };
-    },
     submit() {
         this.refs.form.submit();
     },
@@ -38,23 +34,27 @@ var Basic =  React.createClass({
 
         return (
             <div>
-                <Inspector data={ this.state || {} } />
-
-                    <br />
-                    <br />
                 <JoiForm ref="form" schema={this.joyStuff}
+                        values={this.state.values}
+                        errors={this.state.errors}
+                        controlled={true}
                         {...themes.material}
                         onChange={(e, formValues) => {
-                            this.setState(formValues)
+                          this.setState({values: formValues})
                         }}
                         onSubmit={(e, formValues) => {
 
-                        }}/>
+                        }}
+                        />
                     <button onClick={this.submit}>Test</button>
             </div>
         );
     }
 });
+// <Inspector data={ this.state || {} } />
+//
+// <br />
+// <br />
 module.exports = Basic;
 
-React.render(<Basic />, document.getElementById('basic'));
+render(<Basic />, document.getElementById('basic'));
