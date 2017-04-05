@@ -41,6 +41,7 @@ const __onEvent = (handler) => (e) => {
 class FormSection extends Component {
   static propTypes = {
     tag: string,
+    style: object,
   };
 
   static contextTypes = {
@@ -55,7 +56,7 @@ class FormSection extends Component {
     const fields = (tag === undefined) ? schema : getTaggedFields(schema, tag);
 
     return (
-      <div>
+      <div style={this.props.style}>
         {fields && fields.map((fieldSchema) => {
           assertSchema(fieldSchema);
           fieldSchema._meta = merge(fieldSchema._meta);
