@@ -1,14 +1,13 @@
-var React = require("react/addons");
+var ReactTestUtils = require("react-addons-test-utils");
 var Form = require("../src/index.js").JoiForm;
 var FormSection = require("../src/index.js").FormSection;
-var TestUtils = React.addons.TestUtils;
 
 var Joi = require("joi-browser");
 
 describe("FormSection", () => {
     it("Should use camel cased label for name when no name provided", done => {
         var joyStuff = [Joi.string().label("First Name")];
-        var FormComponent = TestUtils.renderIntoDocument(
+        var FormComponent = ReactTestUtils.renderIntoDocument(
             <Form
                 schema={joyStuff}
                 onSubmit={(err, values) => {
@@ -19,25 +18,25 @@ describe("FormSection", () => {
                 }}
             />
         );
-        var form = TestUtils.findRenderedDOMComponentWithTag(
+        var form = ReactTestUtils.findRenderedDOMComponentWithTag(
             FormComponent,
             "form"
         );
-        var input = TestUtils.scryRenderedDOMComponentsWithTag(
+        var input = ReactTestUtils.scryRenderedDOMComponentsWithTag(
             FormComponent,
             "input"
         )[0];
 
         input.value = "giraffe";
-        React.addons.TestUtils.Simulate.change(input);
-        TestUtils.Simulate.submit(form);
+        ReactTestUtils.Simulate.change(input);
+        ReactTestUtils.Simulate.submit(form);
     });
 
     it("Should use name when provided", done => {
         var joyStuff = [
             Joi.string().label("First Name").meta({ name: "funky" })
         ];
-        var FormComponent = TestUtils.renderIntoDocument(
+        var FormComponent = ReactTestUtils.renderIntoDocument(
             <Form
                 schema={joyStuff}
                 onSubmit={(err, values) => {
@@ -49,30 +48,30 @@ describe("FormSection", () => {
                 }}
             />
         );
-        var form = TestUtils.findRenderedDOMComponentWithTag(
+        var form = ReactTestUtils.findRenderedDOMComponentWithTag(
             FormComponent,
             "form"
         );
-        var input = TestUtils.scryRenderedDOMComponentsWithTag(
+        var input = ReactTestUtils.scryRenderedDOMComponentsWithTag(
             FormComponent,
             "input"
         )[0];
 
         input.value = "giraffe";
-        React.addons.TestUtils.Simulate.change(input);
-        TestUtils.Simulate.submit(form);
+        ReactTestUtils.Simulate.change(input);
+        ReactTestUtils.Simulate.submit(form);
     });
     it("Should create a form containing one section", () => {
         var joiSchema = [
             Joi.string().label("field one"),
             Joi.string().label("field two")
         ];
-        var FormComponent = TestUtils.renderIntoDocument(
+        var FormComponent = ReactTestUtils.renderIntoDocument(
             <Form>
                 <FormSection schema={joiSchema} />
             </Form>
         );
-        var sections = TestUtils.scryRenderedComponentsWithType(
+        var sections = ReactTestUtils.scryRenderedComponentsWithType(
             FormComponent,
             FormSection
         );
@@ -85,7 +84,7 @@ describe("FormSection", () => {
             Joi.string().label("field one"),
             Joi.string().label("field two")
         ];
-        var FormComponent = TestUtils.renderIntoDocument(
+        var FormComponent = ReactTestUtils.renderIntoDocument(
             <Form schema={joiSchema}>
                 <div>
                     <FormSection />
@@ -95,20 +94,20 @@ describe("FormSection", () => {
                 </div>
             </Form>
         );
-        var sections = TestUtils.scryRenderedComponentsWithType(
+        var sections = ReactTestUtils.scryRenderedComponentsWithType(
             FormComponent,
             FormSection
         );
-        var inputs = TestUtils.scryRenderedDOMComponentsWithTag(
+        var inputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(
             FormComponent,
             "input"
         );
 
-        var sectionOneInputs = TestUtils.scryRenderedDOMComponentsWithTag(
+        var sectionOneInputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(
             sections[0],
             "input"
         );
-        var sectionTwoInputs = TestUtils.scryRenderedDOMComponentsWithTag(
+        var sectionTwoInputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(
             sections[1],
             "input"
         );
@@ -125,7 +124,7 @@ describe("FormSection", () => {
             Joi.string().label("field one").tags("section1"),
             Joi.string().label("field two").tags("section2")
         ];
-        var FormComponent = TestUtils.renderIntoDocument(
+        var FormComponent = ReactTestUtils.renderIntoDocument(
             <Form schema={joiSchema}>
                 <div>
                     <FormSection tag="section1" />
@@ -135,20 +134,20 @@ describe("FormSection", () => {
                 </div>
             </Form>
         );
-        var sections = TestUtils.scryRenderedComponentsWithType(
+        var sections = ReactTestUtils.scryRenderedComponentsWithType(
             FormComponent,
             FormSection
         );
-        var inputs = TestUtils.scryRenderedDOMComponentsWithTag(
+        var inputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(
             FormComponent,
             "input"
         );
 
-        var sectionOneInputs = TestUtils.scryRenderedDOMComponentsWithTag(
+        var sectionOneInputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(
             sections[0],
             "input"
         );
-        var sectionTwoInputs = TestUtils.scryRenderedDOMComponentsWithTag(
+        var sectionTwoInputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(
             sections[1],
             "input"
         );
@@ -165,16 +164,16 @@ describe("FormSection", () => {
             Joi.string().label("field one").tags("section1"),
             Joi.string().label("field one").tags("section2")
         ];
-        var FormComponent = TestUtils.renderIntoDocument(
+        var FormComponent = ReactTestUtils.renderIntoDocument(
             <Form schema={joiSchema}>
                 <FormSection tag="foo" />
             </Form>
         );
-        var sections = TestUtils.scryRenderedComponentsWithType(
+        var sections = ReactTestUtils.scryRenderedComponentsWithType(
             FormComponent,
             FormSection
         );
-        var inputs = TestUtils.scryRenderedDOMComponentsWithTag(
+        var inputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(
             FormComponent,
             "input"
         );
@@ -188,7 +187,7 @@ describe("FormSection", () => {
             Joi.string().label("field one").tags("section1"),
             Joi.string().label("field two").tags("section2")
         ];
-        var FormComponent = TestUtils.renderIntoDocument(
+        var FormComponent = ReactTestUtils.renderIntoDocument(
             <Form
                 schema={joiSchema}
                 onSubmit={function(err, data) {
@@ -207,19 +206,19 @@ describe("FormSection", () => {
                 </div>
             </Form>
         );
-        var form = TestUtils.findRenderedDOMComponentWithTag(
+        var form = ReactTestUtils.findRenderedDOMComponentWithTag(
             FormComponent,
             "form"
         );
-        var sections = TestUtils.scryRenderedComponentsWithType(
+        var sections = ReactTestUtils.scryRenderedComponentsWithType(
             FormComponent,
             FormSection
         );
-        var sectionOneInput = TestUtils.scryRenderedDOMComponentsWithTag(
+        var sectionOneInput = ReactTestUtils.scryRenderedDOMComponentsWithTag(
             sections[0],
             "input"
         )[0];
-        var sectionTwoInput = TestUtils.scryRenderedDOMComponentsWithTag(
+        var sectionTwoInput = ReactTestUtils.scryRenderedDOMComponentsWithTag(
             sections[1],
             "input"
         )[0];
@@ -227,11 +226,11 @@ describe("FormSection", () => {
         expect(sections.length).to.equal(2);
 
         sectionOneInput.value = "giraffe";
-        React.addons.TestUtils.Simulate.change(sectionOneInput);
+        ReactTestUtils.Simulate.change(sectionOneInput);
 
         sectionTwoInput.value = "snake";
-        React.addons.TestUtils.Simulate.change(sectionTwoInput);
-        TestUtils.Simulate.submit(form);
+        ReactTestUtils.Simulate.change(sectionTwoInput);
+        ReactTestUtils.Simulate.submit(form);
     });
 
     it("Should create a form containing two sections but both values should be returned even with a component layout", done => {
@@ -249,7 +248,7 @@ describe("FormSection", () => {
             Joi.string().label("field one").tags("section1"),
             Joi.string().label("field two").tags("section2")
         ];
-        var FormComponent = TestUtils.renderIntoDocument(
+        var FormComponent = ReactTestUtils.renderIntoDocument(
             <Form
                 schema={joiSchema}
                 onSubmit={function(err, data) {
@@ -268,23 +267,23 @@ describe("FormSection", () => {
                 </Grid>
             </Form>
         );
-        var form = TestUtils.findRenderedDOMComponentWithTag(
+        var form = ReactTestUtils.findRenderedDOMComponentWithTag(
             FormComponent,
             "form"
         );
-        var sections = TestUtils.scryRenderedComponentsWithType(
+        var sections = ReactTestUtils.scryRenderedComponentsWithType(
             FormComponent,
             FormSection
         );
-        var inputs = TestUtils.scryRenderedDOMComponentsWithTag(
+        var inputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(
             FormComponent,
             "input"
         );
-        var sectionOneInput = TestUtils.scryRenderedDOMComponentsWithTag(
+        var sectionOneInput = ReactTestUtils.scryRenderedDOMComponentsWithTag(
             sections[0],
             "input"
         )[0];
-        var sectionTwoInput = TestUtils.scryRenderedDOMComponentsWithTag(
+        var sectionTwoInput = ReactTestUtils.scryRenderedDOMComponentsWithTag(
             sections[1],
             "input"
         )[0];
@@ -293,10 +292,10 @@ describe("FormSection", () => {
         expect(inputs.length).to.equal(2);
 
         sectionOneInput.value = "giraffe";
-        React.addons.TestUtils.Simulate.change(sectionOneInput);
+        ReactTestUtils.Simulate.change(sectionOneInput);
 
         sectionTwoInput.value = "snake";
-        React.addons.TestUtils.Simulate.change(sectionTwoInput);
-        TestUtils.Simulate.submit(form);
+        ReactTestUtils.Simulate.change(sectionTwoInput);
+        ReactTestUtils.Simulate.submit(form);
     });
 });
