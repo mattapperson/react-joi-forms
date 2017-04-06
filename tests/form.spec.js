@@ -22,7 +22,7 @@ describe("JoiForm", () => {
             FormComponent,
             "input"
         );
-
+        console.log(FormComponent);
         expect(inputs).to.exist;
         expect(inputs.length).to.equal(1);
         expect(inputs[0].type).to.equal("text");
