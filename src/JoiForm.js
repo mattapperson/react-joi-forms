@@ -139,7 +139,7 @@ class JoiForm extends Component {
         const { children, inline } = this.props;
         const childNodes = children || <FormSection />;
         const onSubmit = this.submit;
-        console.log(childNodes);
+
         const vnode = inline
             ? <div>{childNodes}</div>
             : <form onSubmit={onSubmit}>{childNodes}</form>;

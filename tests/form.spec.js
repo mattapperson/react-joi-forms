@@ -1,35 +1,26 @@
-var ReactTestUtils = require("react-addons-test-utils");
 var Form = require("../src/index.js").JoiForm;
 var fileDropTest = require("./setup/create-drop-test-image-event.js");
-
 var Joi = require("joi-browser");
+var React = require("react");
+
+import { shallow } from "enzyme";
 
 describe("JoiForm", () => {
-    it("Should create an empty form object", () => {
-        var FormComponent = ReactTestUtils.renderIntoDocument(<Form />);
-        expect(
-            FormComponent._reactInternalInstance._renderedComponent._currentElement.type
-        ).to.equal("form");
+    test("Should create an empty form object", () => {
+        var FormComponent = shallow(<Form schema={[]} />);
+        expect(FormComponent.find("form")).to.have.length(1);
     });
 
-    it("Should create a form object with one input", () => {
+    test("Should create a form object with one input", () => {
         var joyStuff = [Joi.string().label("First Name")];
-        var FormComponent = ReactTestUtils.renderIntoDocument(
-            <Form schema={joyStuff} />
-        );
-        var inputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(
-            FormComponent,
-            "input"
-        );
-        console.log(FormComponent);
-        expect(inputs).to.exist;
-        expect(inputs.length).to.equal(1);
-        expect(inputs[0].type).to.equal("text");
+        var FormComponent = shallow(<Form schema={joyStuff} />);
+
+        expect(wrapper.find("inputs")).to.have.length(1);
     });
 
-    it("Should fire the onFocus events for input", done => {
+    test("Should fire the onFocus events for input", done => {
         var joyStuff = [Joi.string().label("First Name")];
-        var FormComponent = ReactTestUtils.renderIntoDocument(
+        var FormComponent = shallow(
             <Form
                 schema={joyStuff}
                 onFocus={e => {
@@ -38,19 +29,15 @@ describe("JoiForm", () => {
                 }}
             />
         );
-        var inputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(
-            FormComponent,
-            "input"
-        );
 
-        expect(inputs).to.exist;
-        expect(inputs.length).to.equal(1);
-        ReactTestUtils.Simulate.focus(inputs[0]);
+        expect(wrapper.find("inputs")).to.have.length(1);
+
+        checkbox.find("input").simulate("focus");
     });
 
-    it("Should fire the onBlur events for input", done => {
+    test("Should fire the onBlur events for input", done => {
         var joyStuff = [Joi.string().label("First Name")];
-        var FormComponent = ReactTestUtils.renderIntoDocument(
+        var FormComponent = shallow(
             <Form
                 schema={joyStuff}
                 onBlur={e => {
@@ -70,12 +57,12 @@ describe("JoiForm", () => {
         ReactTestUtils.Simulate.blur(inputs[0]);
     });
 
-    it("Should not error for inputs that have no value when no rule requires a value", done => {
+    test("Should not error for inputs that have no value when no rule requires a value", done => {
         var joyStuff = [
             Joi.string().label("First Name"),
             Joi.string().label("Last Name")
         ];
-        var FormComponent = ReactTestUtils.renderIntoDocument(
+        var FormComponent = shallow(
             <Form
                 schema={joyStuff}
                 onSubmit={(err, values) => {
@@ -101,7 +88,7 @@ describe("JoiForm", () => {
         ReactTestUtils.Simulate.submit(form);
     });
 
-    it("Can use a custom input for the UI", () => {
+    test("Can use a custom input for the UI", () => {
         var joyStuff = [Joi.string().label("First Name")];
         var customInputs = {
             textComponent: (error, value, options, events) => {
@@ -119,7 +106,7 @@ describe("JoiForm", () => {
                 );
             }
         };
-        var FormComponent = ReactTestUtils.renderIntoDocument(
+        var FormComponent = shallow(
             <Form schema={joyStuff} {...customInputs} />
         );
         var inputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(
@@ -132,9 +119,9 @@ describe("JoiForm", () => {
         expect(inputs[0].id).to.equal("funky");
     });
 
-    it("Should submit a form object with one input, and pass the forms data to onSubmit", done => {
+    test("Should submit a form object with one input, and pass the forms data to onSubmit", done => {
         var joyStuff = [Joi.string().label("First Name")];
-        var FormComponent = ReactTestUtils.renderIntoDocument(
+        var FormComponent = shallow(
             <Form
                 schema={joyStuff}
                 onSubmit={function(err, data) {
@@ -161,13 +148,13 @@ describe("JoiForm", () => {
         ReactTestUtils.Simulate.submit(form);
     });
 
-    it("Should return an error when form validation fails", done => {
+    test("Should return an error when form validation fails", done => {
         var joyStuff = [
             Joi.string().label("Error First Name").required().min(2),
             Joi.string().label("Error Last Name").required()
         ];
         var FormComponent;
-        FormComponent = ReactTestUtils.renderIntoDocument(
+        FormComponent = shallow(
             <Form
                 schema={joyStuff}
                 onSubmit={function(err, data) {
@@ -193,14 +180,12 @@ describe("JoiForm", () => {
         ReactTestUtils.Simulate.submit(form);
     });
 
-    it("Should populate forms with values param", () => {
+    test("Should populate forms with values param", () => {
         var joyStuff = [Joi.string().label("First Name").required()];
         var values = {
             firstName: "foo bar"
         };
-        var FormComponent = ReactTestUtils.renderIntoDocument(
-            <Form schema={joyStuff} values={values} />
-        );
+        var FormComponent = shallow(<Form schema={joyStuff} values={values} />);
         var form = ReactTestUtils.findRenderedDOMComponentWithTag(
             FormComponent,
             "form"
@@ -214,7 +199,7 @@ describe("JoiForm", () => {
         expect(inputs[0].value).to.equal("foo bar");
     });
 
-    it("Should update the value when user enters text", done => {
+    test("Should update the value when user enters text", done => {
         var joyStuff = [Joi.string().label("First Name").required()];
         var FormComponent, inputs, firstInput;
         var customInputs = {
@@ -239,9 +224,7 @@ describe("JoiForm", () => {
                 );
             }
         };
-        FormComponent = ReactTestUtils.renderIntoDocument(
-            <Form schema={joyStuff} {...customInputs} />
-        );
+        FormComponent = shallow(<Form schema={joyStuff} {...customInputs} />);
         inputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(
             FormComponent,
             "input"
@@ -255,7 +238,7 @@ describe("JoiForm", () => {
         ReactTestUtils.Simulate.change(testInput);
     });
 
-    it("Should update the error prop when user enters invalid text then blurs the field", done => {
+    test("Should update the error prop when user enters invalid text then blurs the field", done => {
         var joyStuff = [
             Joi.string().label("component First Name").min(10).required(),
             Joi.string().label("component Last Name").min(2).required()
@@ -282,9 +265,7 @@ describe("JoiForm", () => {
                 );
             }
         };
-        FormComponent = ReactTestUtils.renderIntoDocument(
-            <Form schema={joyStuff} {...customInputs} />
-        );
+        FormComponent = shallow(<Form schema={joyStuff} {...customInputs} />);
         inputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(
             FormComponent,
             "input"
@@ -299,7 +280,7 @@ describe("JoiForm", () => {
         ReactTestUtils.Simulate.blur(testInput);
     });
 
-    it("Should clear error prop when user updates field that had errored", done => {
+    test("Should clear error prop when user updates field that had errored", done => {
         var joyStuff = [
             Joi.string().label("component First Name").min(10).required(),
             Joi.string().label("component Last Name").min(2).required()
@@ -332,9 +313,7 @@ describe("JoiForm", () => {
                 );
             }
         };
-        FormComponent = ReactTestUtils.renderIntoDocument(
-            <Form schema={joyStuff} {...customInputs} />
-        );
+        FormComponent = shallow(<Form schema={joyStuff} {...customInputs} />);
         inputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(
             FormComponent,
             "input"
@@ -357,16 +336,14 @@ describe("JoiForm", () => {
     });
 
     if (!process || !process.env.ENV_JSDOM) {
-        it("Should populate input with placeholder param", () => {
+        test("Should populate input with placeholder param", () => {
             var joyStuff = [
                 Joi.string()
                     .label("First Name")
                     .required()
                     .example("this is a placeholder")
             ];
-            var FormComponent = ReactTestUtils.renderIntoDocument(
-                <Form schema={joyStuff} />
-            );
+            var FormComponent = shallow(<Form schema={joyStuff} />);
             var form = ReactTestUtils.findRenderedDOMComponentWithTag(
                 FormComponent,
                 "form"
@@ -380,7 +357,7 @@ describe("JoiForm", () => {
         });
     }
 
-    it("Should create a password text input", () => {
+    test("Should create a password text input", () => {
         var joyStuff = [
             Joi.string()
                 .label("First Name")
@@ -390,9 +367,7 @@ describe("JoiForm", () => {
         var values = {
             firstName: "foo bar"
         };
-        var FormComponent = ReactTestUtils.renderIntoDocument(
-            <Form schema={joyStuff} values={values} />
-        );
+        var FormComponent = shallow(<Form schema={joyStuff} values={values} />);
         var form = ReactTestUtils.findRenderedDOMComponentWithTag(
             FormComponent,
             "form"
@@ -406,7 +381,7 @@ describe("JoiForm", () => {
         expect(inputs[0].value).to.equal("foo bar");
     });
 
-    it("Should create an html5 email text input", () => {
+    test("Should create an html5 email text input", () => {
         var joyStuff = [
             Joi.string()
                 .email()
@@ -414,9 +389,7 @@ describe("JoiForm", () => {
                 .required()
                 .meta({ type: "email" })
         ];
-        var FormComponent = ReactTestUtils.renderIntoDocument(
-            <Form schema={joyStuff} />
-        );
+        var FormComponent = shallow(<Form schema={joyStuff} />);
         var form = ReactTestUtils.findRenderedDOMComponentWithTag(
             FormComponent,
             "form"
@@ -429,7 +402,7 @@ describe("JoiForm", () => {
         expect(inputs[0].type).to.equal("email");
     });
 
-    it("Should create a text area", () => {
+    test("Should create a text area", () => {
         var joyStuff = [
             Joi.string()
                 .label("First Name")
@@ -439,9 +412,7 @@ describe("JoiForm", () => {
         var values = {
             firstName: "foo bar"
         };
-        var FormComponent = ReactTestUtils.renderIntoDocument(
-            <Form schema={joyStuff} values={values} />
-        );
+        var FormComponent = shallow(<Form schema={joyStuff} values={values} />);
         var form = ReactTestUtils.findRenderedDOMComponentWithTag(
             FormComponent,
             "form"
@@ -454,16 +425,14 @@ describe("JoiForm", () => {
         expect(inputs[0]).to.exist;
     });
 
-    it("Should create a select box", () => {
+    test("Should create a select box", () => {
         var joyStuff = [
             Joi.string()
                 .label("Select Box")
                 .valid(["c", "C"])
                 .meta({ component: "select" })
         ];
-        var FormComponent = ReactTestUtils.renderIntoDocument(
-            <Form schema={joyStuff} />
-        );
+        var FormComponent = shallow(<Form schema={joyStuff} />);
         var inputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(
             FormComponent,
             "select"
@@ -482,16 +451,14 @@ describe("JoiForm", () => {
         expect(options[0].text).to.equal("c");
     });
 
-    it("Should create a select box with custom names", () => {
+    test("Should create a select box with custom names", () => {
         var joyStuff = [
             Joi.string()
                 .label("Select Box With Custom Names")
                 .valid(["c", "C"])
                 .meta({ component: "select", names: ["cat", "Big Cat"] })
         ];
-        var FormComponent = ReactTestUtils.renderIntoDocument(
-            <Form schema={joyStuff} />
-        );
+        var FormComponent = shallow(<Form schema={joyStuff} />);
         var inputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(
             FormComponent,
             "select"
@@ -510,13 +477,11 @@ describe("JoiForm", () => {
 
     // For some reason, jsdom is leaking this test into the rest of the system...
     if (!process || !process.env.ENV_JSDOM) {
-        it("Should create a check box", () => {
+        test("Should create a check box", () => {
             var joyStuff = [
                 Joi.boolean().label("Check Box").meta({ component: "checkbox" })
             ];
-            var FormComponent = ReactTestUtils.renderIntoDocument(
-                <Form schema={joyStuff} />
-            );
+            var FormComponent = shallow(<Form schema={joyStuff} />);
             var inputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(
                 FormComponent,
                 "input"
@@ -527,13 +492,11 @@ describe("JoiForm", () => {
         });
     }
 
-    it("Should create a file input", () => {
+    test("Should create a file input", () => {
         var joyStuff = [
             Joi.object().label("File Upload").meta({ component: "file" })
         ];
-        var FormComponent = ReactTestUtils.renderIntoDocument(
-            <Form schema={joyStuff} />
-        );
+        var FormComponent = shallow(<Form schema={joyStuff} />);
         var inputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(
             FormComponent,
             "input"
@@ -544,14 +507,14 @@ describe("JoiForm", () => {
     });
 
     if (!process || !process.env.ENV_JSDOM) {
-        it("Should capture file input on drop event", done => {
+        test("Should capture file input on drop event", done => {
             fileDropTest(function(fakeEvt, randomFile) {
                 var joyStuff = [
                     Joi.object()
                         .label("File Upload")
                         .meta({ component: "file" })
                 ];
-                var FormComponent = ReactTestUtils.renderIntoDocument(
+                var FormComponent = shallow(
                     <Form
                         schema={joyStuff}
                         onChange={(e, formValues) => {

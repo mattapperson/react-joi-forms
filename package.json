@@ -13,7 +13,7 @@
     "form"
   ],
   "scripts": {
-    "test": "ENV_JSDOM=true mocha --compilers js:babel-core/register --recursive tests/setup/setup-node.js tests/",
+    "test": "jest",
     "test-browser": "karma start ./karma.conf.js  --single-run",
     "prebuild": "rm -rf lib && rm -rf build",
     "build": "babel --stage 1 --plugins transform-class-properties ./src --out-dir ./lib",
@@ -24,6 +24,7 @@
   "devDependencies": {
     "babel-core": "^6.24.0",
     "babel-eslint": "^3.1.17",
+    "babel-jest": "^19.0.0",
     "babel-loader": "^6.0.0",
     "babel-plugin-transform-class-properties": "^6.23.0",
     "babel-preset-es2015": "^6.24.0",
@@ -32,6 +33,8 @@
     "babel-runtime": "^6.0.0",
     "babelify": "^6.1.3",
     "chai": "^3.2.0",
+    "enzyme": "^2.8.0",
+    "jest": "^19.0.2",
     "jsdom": "^7.0.1",
     "karma": "^0.13.9",
     "karma-chai": "^0.1.0",
@@ -52,6 +55,7 @@
     "react-dom": "^15.4.2",
     "react-hot-loader": "^1.3.0",
     "react-json-inspector": "^6.0.0",
+    "react-test-renderer": "^15.4.2",
     "sinon": "^1.16.1",
     "sinon-chai": "^2.8.0",
     "source-map-support": "^0.2.8",

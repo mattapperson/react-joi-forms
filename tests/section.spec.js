@@ -1,13 +1,14 @@
-var ReactTestUtils = require("react-addons-test-utils");
+var renderer = require("react-test-renderer");
 var Form = require("../src/index.js").JoiForm;
 var FormSection = require("../src/index.js").FormSection;
+var React = require("react");
 
 var Joi = require("joi-browser");
 
 describe("FormSection", () => {
-    it("Should use camel cased label for name when no name provided", done => {
+    test("Should use camel cased label for name when no name provided", done => {
         var joyStuff = [Joi.string().label("First Name")];
-        var FormComponent = ReactTestUtils.renderIntoDocument(
+        var FormComponent = renderer.create(
             <Form
                 schema={joyStuff}
                 onSubmit={(err, values) => {
@@ -18,25 +19,15 @@ describe("FormSection", () => {
                 }}
             />
         );
-        var form = ReactTestUtils.findRenderedDOMComponentWithTag(
-            FormComponent,
-            "form"
-        );
-        var input = ReactTestUtils.scryRenderedDOMComponentsWithTag(
-            FormComponent,
-            "input"
-        )[0];
-
-        input.value = "giraffe";
-        ReactTestUtils.Simulate.change(input);
-        ReactTestUtils.Simulate.submit(form);
+        let tree = FormComponent.toJSON();
+        expect(tree).toMatchSnapshot();
     });
 
-    it("Should use name when provided", done => {
+    test("Should use name when provided", done => {
         var joyStuff = [
             Joi.string().label("First Name").meta({ name: "funky" })
         ];
-        var FormComponent = ReactTestUtils.renderIntoDocument(
+        var FormComponent = renderer.create(
             <Form
                 schema={joyStuff}
                 onSubmit={(err, values) => {
@@ -48,43 +39,30 @@ describe("FormSection", () => {
                 }}
             />
         );
-        var form = ReactTestUtils.findRenderedDOMComponentWithTag(
-            FormComponent,
-            "form"
-        );
-        var input = ReactTestUtils.scryRenderedDOMComponentsWithTag(
-            FormComponent,
-            "input"
-        )[0];
 
-        input.value = "giraffe";
-        ReactTestUtils.Simulate.change(input);
-        ReactTestUtils.Simulate.submit(form);
+        let tree = FormComponent.toJSON();
+        expect(tree).toMatchSnapshot();
     });
-    it("Should create a form containing one section", () => {
+    test("Should create a form containing one section", () => {
         var joiSchema = [
             Joi.string().label("field one"),
             Joi.string().label("field two")
         ];
-        var FormComponent = ReactTestUtils.renderIntoDocument(
+        var FormComponent = renderer.create(
             <Form>
                 <FormSection schema={joiSchema} />
             </Form>
         );
-        var sections = ReactTestUtils.scryRenderedComponentsWithType(
-            FormComponent,
-            FormSection
-        );
-
-        expect(sections.length).to.equal(1);
+        let tree = FormComponent.toJSON();
+        expect(tree).toMatchSnapshot();
     });
 
-    it("Should create a form containing two sections but no tags", () => {
+    test("Should create a form containing two sections but no tags", () => {
         var joiSchema = [
             Joi.string().label("field one"),
             Joi.string().label("field two")
         ];
-        var FormComponent = ReactTestUtils.renderIntoDocument(
+        var FormComponent = renderer.create(
             <Form schema={joiSchema}>
                 <div>
                     <FormSection />
@@ -94,37 +72,16 @@ describe("FormSection", () => {
                 </div>
             </Form>
         );
-        var sections = ReactTestUtils.scryRenderedComponentsWithType(
-            FormComponent,
-            FormSection
-        );
-        var inputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(
-            FormComponent,
-            "input"
-        );
-
-        var sectionOneInputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(
-            sections[0],
-            "input"
-        );
-        var sectionTwoInputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(
-            sections[1],
-            "input"
-        );
-
-        expect(sections.length).to.equal(2);
-        expect(inputs.length).to.equal(4);
-
-        expect(sectionOneInputs.length).to.equal(2);
-        expect(sectionTwoInputs.length).to.equal(2);
+        let tree = FormComponent.toJSON();
+        expect(tree).toMatchSnapshot();
     });
 
-    it("Should create a form containing two sections w/tags", () => {
+    test("Should create a form containing two sections w/tags", () => {
         var joiSchema = [
             Joi.string().label("field one").tags("section1"),
             Joi.string().label("field two").tags("section2")
         ];
-        var FormComponent = ReactTestUtils.renderIntoDocument(
+        var FormComponent = renderer.create(
             <Form schema={joiSchema}>
                 <div>
                     <FormSection tag="section1" />
@@ -134,60 +91,30 @@ describe("FormSection", () => {
                 </div>
             </Form>
         );
-        var sections = ReactTestUtils.scryRenderedComponentsWithType(
-            FormComponent,
-            FormSection
-        );
-        var inputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(
-            FormComponent,
-            "input"
-        );
-
-        var sectionOneInputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(
-            sections[0],
-            "input"
-        );
-        var sectionTwoInputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(
-            sections[1],
-            "input"
-        );
-
-        expect(sections.length).to.equal(2);
-        expect(inputs.length).to.equal(2);
-
-        expect(sectionOneInputs.length).to.equal(1);
-        expect(sectionTwoInputs.length).to.equal(1);
+        let tree = FormComponent.toJSON();
+        expect(tree).toMatchSnapshot();
     });
 
-    it("Should create a form with a section containing 0 fields", () => {
+    test("Should create a form with a section containing 0 fields", () => {
         var joiSchema = [
             Joi.string().label("field one").tags("section1"),
             Joi.string().label("field one").tags("section2")
         ];
-        var FormComponent = ReactTestUtils.renderIntoDocument(
+        var FormComponent = renderer.create(
             <Form schema={joiSchema}>
                 <FormSection tag="foo" />
             </Form>
         );
-        var sections = ReactTestUtils.scryRenderedComponentsWithType(
-            FormComponent,
-            FormSection
-        );
-        var inputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(
-            FormComponent,
-            "input"
-        );
-
-        expect(sections.length).to.equal(1);
-        expect(inputs.length).to.equal(0);
+        let tree = FormComponent.toJSON();
+        expect(tree).toMatchSnapshot();
     });
 
-    it("Should create a form containing two sections but both values should be returned", done => {
+    test("Should create a form containing two sections but both values should be returned", done => {
         var joiSchema = [
             Joi.string().label("field one").tags("section1"),
             Joi.string().label("field two").tags("section2")
         ];
-        var FormComponent = ReactTestUtils.renderIntoDocument(
+        var FormComponent = renderer.create(
             <Form
                 schema={joiSchema}
                 onSubmit={function(err, data) {
@@ -206,34 +133,11 @@ describe("FormSection", () => {
                 </div>
             </Form>
         );
-        var form = ReactTestUtils.findRenderedDOMComponentWithTag(
-            FormComponent,
-            "form"
-        );
-        var sections = ReactTestUtils.scryRenderedComponentsWithType(
-            FormComponent,
-            FormSection
-        );
-        var sectionOneInput = ReactTestUtils.scryRenderedDOMComponentsWithTag(
-            sections[0],
-            "input"
-        )[0];
-        var sectionTwoInput = ReactTestUtils.scryRenderedDOMComponentsWithTag(
-            sections[1],
-            "input"
-        )[0];
-
-        expect(sections.length).to.equal(2);
-
-        sectionOneInput.value = "giraffe";
-        ReactTestUtils.Simulate.change(sectionOneInput);
-
-        sectionTwoInput.value = "snake";
-        ReactTestUtils.Simulate.change(sectionTwoInput);
-        ReactTestUtils.Simulate.submit(form);
+        let tree = FormComponent.toJSON();
+        expect(tree).toMatchSnapshot();
     });
 
-    it("Should create a form containing two sections but both values should be returned even with a component layout", done => {
+    test("Should create a form containing two sections but both values should be returned even with a component layout", done => {
         var Grid = React.createClass({
             render() {
                 return (
@@ -248,7 +152,7 @@ describe("FormSection", () => {
             Joi.string().label("field one").tags("section1"),
             Joi.string().label("field two").tags("section2")
         ];
-        var FormComponent = ReactTestUtils.renderIntoDocument(
+        var FormComponent = renderer.create(
             <Form
                 schema={joiSchema}
                 onSubmit={function(err, data) {
@@ -267,35 +171,7 @@ describe("FormSection", () => {
                 </Grid>
             </Form>
         );
-        var form = ReactTestUtils.findRenderedDOMComponentWithTag(
-            FormComponent,
-            "form"
-        );
-        var sections = ReactTestUtils.scryRenderedComponentsWithType(
-            FormComponent,
-            FormSection
-        );
-        var inputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(
-            FormComponent,
-            "input"
-        );
-        var sectionOneInput = ReactTestUtils.scryRenderedDOMComponentsWithTag(
-            sections[0],
-            "input"
-        )[0];
-        var sectionTwoInput = ReactTestUtils.scryRenderedDOMComponentsWithTag(
-            sections[1],
-            "input"
-        )[0];
-
-        expect(sections.length).to.equal(2);
-        expect(inputs.length).to.equal(2);
-
-        sectionOneInput.value = "giraffe";
-        ReactTestUtils.Simulate.change(sectionOneInput);
-
-        sectionTwoInput.value = "snake";
-        ReactTestUtils.Simulate.change(sectionTwoInput);
-        ReactTestUtils.Simulate.submit(form);
+        let tree = FormComponent.toJSON();
+        expect(tree).toMatchSnapshot();
     });
 });
