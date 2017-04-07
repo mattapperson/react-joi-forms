@@ -1,11 +1,11 @@
-import html5 from './themes/html5';
-import material from './themes/material';
+import html5 from "./themes/html5";
+import material from "./themes/material";
 
 export const themes = {
-  html5,
-  material,
+    html5,
+    material
 };
 
-export JoiForm from './JoiForm';
-export FormSection from './FormSection';
-export * as utils from './utils';
+export JoiForm from "./JoiForm";
+export JoiInput from "./Input";
+export * as utils from "./utils";

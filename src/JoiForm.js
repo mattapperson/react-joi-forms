@@ -3,59 +3,34 @@ import Joi from "joi-browser";
 import FormSection from "./FormSection";
 import { merge, camelize, reduce, keys, noop, defaultValues } from "./utils";
 import isEqual from "lodash.isequal";
-import { components } from "./themes/html5";
-
-const { array, object, func, bool } = PropTypes;
 
 class JoiForm extends Component {
     static propTypes = {
-        schema: array.isRequired,
-        values: object,
-        errors: object,
-        controlled: bool,
-        onSubmit: func,
-        onChange: func,
-        onSelect2Search: func,
-        onAutocompleteSearch: func,
-        prevDefault: bool,
-        validateOpts: object,
-        textComponent: func,
-        selectComponent: func,
-        select2Component: func,
-        textAreaComponent: func,
-        radioComponent: func,
-        checkboxComponent: func,
-        fileComponent: func,
-        formComponent: func,
-        autocompleteComponent: func
+        schema: PropTypes.object,
+        values: PropTypes.object,
+        errors: PropTypes.object,
+        onSubmit: PropTypes.func,
+        onChange: PropTypes.func,
+        validateOpts: PropTypes.object
     };
 
     static childContextTypes = {
-        joiForm: object
+        joiForm: PropTypes.object
     };
 
     static defaultProps = {
         validateOpts: {},
-        prevDefault: true,
         values: {},
-        errors: {},
-        ...components
+        errors: {}
     };
 
     constructor(props) {
         super(props);
         let state = {};
 
-        const { schema = [], values, errors } = props;
+        const { schema = {}, values, errors } = props;
 
-        state.schema = reduce(
-            schema,
-            (acc, x) => {
-                const meta = merge(x._meta);
-                return { ...acc, [meta.name || camelize(x._flags.label)]: x };
-            },
-            {}
-        );
+        state.schema = schema;
         state.errors = errors;
         state.values = { ...defaultValues(schema, values), ...values };
         this.state = state;
@@ -64,11 +39,9 @@ class JoiForm extends Component {
     getChildContext() {
         const {
             schema,
-            prevDefault,
             validateOpts,
             textComponent,
             selectComponent,
-            select2Component,
             textAreaComponent,
             radioComponent,
             checkboxComponent,
@@ -79,20 +52,16 @@ class JoiForm extends Component {
 
         return {
             joiForm: {
-                getValue: this.__getValue,
-                getErrors: this.__getErrors,
+                values: this.state.values,
+                errors: this.state.errors,
                 onChange: this.__onChange,
-                onSelect2Search: this.__onSelect2Search,
                 onFocus: this.__onFocus,
                 onBlur: this.__onBlur,
-                onAutocompleteSearch: this.__onAutocompleteSearch,
 
                 schema,
-                prevDefault,
                 validateOpts,
                 textComponent,
                 selectComponent,
-                select2Component,
                 textAreaComponent,
                 radioComponent,
                 checkboxComponent,
@@ -103,36 +72,14 @@ class JoiForm extends Component {
         };
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        const { controlled } = this.props;
-        const schemasEqual = nextState.schema === this.state.schema;
-        const valuesEqual = isEqual(nextState.values, this.state.values);
-
-        // if controlled = true -> rerender
-        // if controlled = false -> rerender if values changed or schema changed
-        if (controlled) return true;
-        return !schemasEqual || !valuesEqual;
-    }
-
     componentWillReceiveProps(nextProps) {
-        const schema = reduce(
-            nextProps.schema,
-            (acc, x) => {
-                const meta = merge(x._meta);
-                return { ...acc, [meta.name || camelize(x._flags.label)]: x };
-            },
-            {}
-        );
-        if (this.props.controlled) {
-            const isNextValuesEmpty = keys(nextProps.values).length === 0;
-            const values = isNextValuesEmpty
-                ? {}
-                : { ...this.state.values, ...nextProps.values };
-            const errors = { ...this.state.errors, ...nextProps.errors };
-            this.setState({ ...this.state, schema, values, errors });
-        } else {
-            this.setState({ ...this.state, schema });
-        }
+        const schema = nextProps.schema;
+        const isNextValuesEmpty = keys(nextProps.values).length === 0;
+        const values = isNextValuesEmpty
+            ? {}
+            : { ...this.state.values, ...nextProps.values };
+        const errors = { ...this.state.errors, ...nextProps.errors };
+        this.setState({ ...this.state, schema, values, errors });
     }
 
     render() {
@@ -147,11 +94,11 @@ class JoiForm extends Component {
     }
 
     submit = e => {
-        const { validateOpts, onSubmit, prevDefault } = this.props;
+        const { validateOpts, onSubmit } = this.props;
         const { values, schema } = this.state;
 
         if (!onSubmit) return;
-        if (prevDefault && e) e.preventDefault();
+        if (e) e.preventDefault();
 
         Joi.validate(
             values,
@@ -175,7 +122,6 @@ class JoiForm extends Component {
     __onChange = (e, values) => {
         const { name, value } = e.target;
         const newState = { values: this.state.values };
-        const { controlled } = this.props;
 
         // update newState values with event values
         reduce(
@@ -196,14 +142,9 @@ class JoiForm extends Component {
         const onChange = this.props.onChange || noop;
         const { schema, errors } = this.state;
         if (!errors || !errors[name]) {
-            if (controlled) {
-                onChange(e, newState.values);
-                this.setState(newState);
-                return;
-            } else {
-                onChange(e, newState.values);
-                this.setState(newState);
-            }
+            onChange(e, newState.values);
+            this.setState(newState);
+            return;
         }
 
         Joi.validate(value, schema[name], (err, value) => {
@@ -216,29 +157,9 @@ class JoiForm extends Component {
                 : {};
             newState.errors = { ...errors, ...formErrors };
             if (!err) delete newState.errors[name];
-            if (controlled) {
-                onChange(e, newState.values);
-                this.setState(newState);
-            } else {
-                onChange(e, newState.values);
-                this.setState(newState);
-            }
+            onChange(e, newState.values);
+            this.setState(newState);
         });
-    };
-
-    __onSelect2Search = (e, change) => {
-        const handler = this.props.onSelect2Search || noop;
-        handler(e, change);
-    };
-
-    __onFocus = e => {
-        const handler = this.props.onFocus || noop;
-        handler(e);
-    };
-
-    __onAutocompleteSearch = (searchText, dataSource) => {
-        const handler = this.props.onAutocompleteSearch || noop;
-        handler(searchText, dataSource);
     };
 
     __onBlur = e => {
@@ -248,13 +169,13 @@ class JoiForm extends Component {
 
         // Dont validate if the field is empty and not required
         if (value === "" && schema[name]._flags.presence !== "required") {
-            onBlur(e);
+            onBlur(null, e);
             return;
         }
 
         Joi.validate(value, schema[name], (err, value) => {
             if (!err) {
-                onBlur(e);
+                onBlur(null, e);
                 return;
             }
             const formErrors = reduce(
@@ -264,19 +185,9 @@ class JoiForm extends Component {
             );
             this.setState(
                 { errors: { ...this.state.errors, ...formErrors } },
-                () => onBlur(e)
+                () => onBlur(formErrors[name], e)
             );
         });
-    };
-
-    __getErrors = fieldName => {
-        const data = this.state.errors;
-        return fieldName ? data && data[fieldName] : data;
-    };
-
-    __getValue = fieldName => {
-        const data = this.state.values;
-        return fieldName ? data && data[fieldName] : data;
     };
 }
 
