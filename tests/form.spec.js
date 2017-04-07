@@ -129,9 +129,74 @@ describe("JoiForm", () => {
         ]);
     });
 
-    test("Should fire onChange events for input via context", () => {});
+    test("Should fire onChange events for input via context", () => {
+        const mockChange = jest.fn();
+        const preventDefault = jest.fn();
 
-    test("Should clear any error when onChange events for input via context", () => {});
+        var component = shallow(
+            <Form
+                schema={{
+                    name: Joi.string().label("First Name")
+                }}
+                onChange={mockChange}
+            />
+        );
+        var context = component.instance().getChildContext();
+
+        expect(context.joiForm).toHaveProperty("onChange");
+
+        context.joiForm.onChange(
+            {
+                target: { name: "name", value: "foo" },
+                preventDefault: preventDefault
+            },
+            { name: "foo" }
+        );
+
+        expect(mockChange.mock.calls).toEqual([
+            [
+                {
+                    target: { name: "name", value: "foo" },
+                    preventDefault: preventDefault
+                },
+                { name: "foo" }
+            ]
+        ]);
+    });
+
+    test("Should clear any error when onChange events for input via context", () => {
+        var context;
+        const preventDefault = jest.fn();
+
+        var component = shallow(
+            <Form
+                schema={{
+                    name: Joi.string().label("First Name")
+                }}
+            />
+        );
+        component.setState({
+            errors: {
+                name: "some error"
+            }
+        });
+
+        context = component.instance().getChildContext();
+
+        expect(context.joiForm.errors).toHaveProperty("name");
+
+        context.joiForm.onChange(
+            {
+                target: { name: "name", value: "foo" },
+                preventDefault: preventDefault
+            },
+            { name: "foo" }
+        );
+
+        context = component.instance().getChildContext();
+
+        expect(context.joiForm.errors).not.toHaveProperty("name");
+    });
 
     test("Should fire the onFocus events for input via context", () => {});
 
