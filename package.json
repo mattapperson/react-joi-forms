@@ -13,7 +13,7 @@
     "form"
   ],
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage",
     "test-browser": "karma start ./karma.conf.js  --single-run",
     "prebuild": "rm -rf lib && rm -rf build",
     "build": "babel --stage 1 --plugins transform-class-properties ./src --out-dir ./lib",
@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "babel-core": "^6.24.0",
-    "babel-eslint": "^3.1.17",
+    "babel-eslint": "^7.2.1",
     "babel-jest": "^19.0.0",
     "babel-loader": "^6.0.0",
     "babel-plugin-transform-class-properties": "^6.23.0",
@@ -31,20 +31,20 @@
     "babel-preset-react": "^6.23.0",
     "babel-preset-stage-0": "^6.22.0",
     "babel-runtime": "^6.0.0",
-    "babelify": "^6.1.3",
+    "babelify": "^7.3.0",
     "chai": "^3.2.0",
     "enzyme": "^2.8.0",
     "jest": "^19.0.2",
-    "jsdom": "^7.0.1",
-    "karma": "^0.13.9",
+    "jsdom": "^9.12.0",
+    "karma": "^1.6.0",
     "karma-chai": "^0.1.0",
-    "karma-chrome-launcher": "^0.2.0",
-    "karma-cli": "^0.1.0",
-    "karma-firefox-launcher": "^0.1.6",
-    "karma-mocha": "^0.2.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-cli": "^1.0.1",
+    "karma-firefox-launcher": "^1.0.1",
+    "karma-mocha": "^1.3.0",
     "karma-sourcemap-loader": "^0.3.5",
-    "karma-webpack": "^1.6.0",
-    "mocha": "^2.2.5",
+    "karma-webpack": "^2.0.3",
+    "mocha": "^3.2.0",
     "moment": "^2.18.1",
     "react": "^15.4.2",
     "react-addons-create-fragment": "^15.4.2",
@@ -54,15 +54,15 @@
     "react-addons-update": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-hot-loader": "^1.3.0",
-    "react-json-inspector": "^6.0.0",
+    "react-json-inspector": "^7.0.0",
     "react-test-renderer": "^15.4.2",
-    "sinon": "^1.16.1",
+    "sinon": "^2.1.0",
     "sinon-chai": "^2.8.0",
-    "source-map-support": "^0.2.8",
+    "source-map-support": "^0.4.14",
     "transfer-webpack-plugin": "^0.1.4",
     "vinyl-source-stream": "^1.1.0",
-    "webpack": "^1.12.2",
-    "webpack-dev-server": "^1.12.1"
+    "webpack": "^2.3.3",
+    "webpack-dev-server": "^2.4.2"
   },
   "repository": {
     "type": "git",
@@ -72,9 +72,9 @@
   "license": "MIT",
   "dependencies": {
     "babel-cli": "^6.24.0",
-    "joi-browser": "^9.0.4",
+    "joi-browser": "^10.0.6",
     "lodash.isequal": "^4.4.0",
-    "material-ui": "^0.13.0",
-    "react-tap-event-plugin": "^0.2.1"
+    "material-ui": "^0.17.2",
+    "react-tap-event-plugin": "^2.0.1"
   }
 }

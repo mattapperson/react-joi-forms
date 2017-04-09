@@ -1,4 +1,7 @@
 language: node_js
 node_js:
-  - "v4.2.1"
-install: npm install
+  - "v7.6.0"
+cache:
+  yarn: true
+  directories:
+    - node_modules

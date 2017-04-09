@@ -78,8 +78,8 @@ class JoiForm extends Component {
         const values = isNextValuesEmpty
             ? {}
             : { ...this.state.values, ...nextProps.values };
-        const errors = { ...this.state.errors, ...nextProps.errors };
-        this.setState({ ...this.state, schema, values, errors });
+
+        this.setState({ ...this.state, schema, values });
     }
 
     render() {
