@@ -111,7 +111,8 @@ class JoiForm extends Component {
                         (acc, n) => ({ ...acc, [camelize(n.path)]: n.message }),
                         {}
                     );
-                    this.setState({ errors }, () => onSubmit(errors, null, e));
+                    this.setState({ errors }, () =>
+                        onSubmit(errors, values, e));
                     return;
                 }
                 onSubmit(null, values, e);
@@ -188,6 +189,11 @@ class JoiForm extends Component {
                 () => onBlur(formErrors[name], e)
             );
         });
+    };
+
+    __onFocus = e => {
+        const handler = this.props.onFocus || noop;
+        handler(e);
     };
 }
 

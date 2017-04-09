@@ -4,7 +4,7 @@ var Input = require("../src/index.js").JoiInput;
 var Joi = require("joi-browser");
 var React = require("react");
 
-import { shallow } from "enzyme";
+import { shallow, mount } from "enzyme";
 
 describe("JoiForm", () => {
     test("Should create an empty form object", () => {
@@ -198,11 +198,97 @@ describe("JoiForm", () => {
         expect(context.joiForm.errors).not.toHaveProperty("name");
     });
 
-    test("Should fire the onFocus events for input via context", () => {});
+    test("Should fire the onFocus events for input via context", () => {
+        const mockFocus = jest.fn();
+        const preventDefault = jest.fn();
 
-    test("Should re-validate entire form onSubmit", () => {});
+        var component = shallow(
+            <Form
+                schema={{
+                    name: Joi.string().label("First Name")
+                }}
+                onFocus={mockFocus}
+            />
+        );
+        var context = component.instance().getChildContext();
 
-    test("Should onSubmit should fail if validation does", () => {});
+        expect(context.joiForm).toHaveProperty("onFocus");
 
-    test("Should fire the onSubmit events via submit button", () => {});
+        context.joiForm.onFocus({
+            target: { name: "name", value: "foo" },
+            preventDefault: preventDefault
+        });
+
+        expect(mockFocus.mock.calls).toEqual([
+            [
+                {
+                    target: { name: "name", value: "foo" },
+                    preventDefault: preventDefault
+                }
+            ]
+        ]);
+    });
+
+    test("Should fire the onSubmit events via submit button", () => {
+        const mockSubmit = jest.fn();
+        const preventDefault = jest.fn();
+
+        var component = mount(
+            <Form
+                schema={{
+                    name: Joi.string().label("First Name")
+                }}
+                values={{
+                    name: 22
+                }}
+                onSubmit={mockSubmit}>
+                <button type="submit" value="Submit">Submit</button>
+            </Form>
+        );
+        var context = component.instance().getChildContext();
+
+        component.find('[type="submit"]').get(0).click();
+
+        // error should exist
+        expect(mockSubmit.mock.calls[0][0]).not.toBeNull();
+        expect(mockSubmit.mock.calls[0][0]).toEqual({
+            name: '"First Name" must be a string'
+        });
+
+        // value should be passed for all fields
+        expect(mockSubmit.mock.calls[0][1]).toEqual({ name: 22 });
+
+        // raw event passed
+        expect(typeof mockSubmit.mock.calls[0][2]).toEqual("object");
+    });
+
+    test("Should onSubmit should fail if validation does", () => {
+        const mockSubmit = jest.fn();
+        const preventDefault = jest.fn();
+
+        var component = mount(
+            <Form
+                schema={{
+                    name: Joi.string().label("First Name")
+                }}
+                values={{
+                    name: "foo"
+                }}
+                onSubmit={mockSubmit}>
+                <button type="submit" value="Submit">Submit</button>
+            </Form>
+        );
+        var context = component.instance().getChildContext();
+
+        component.find('[type="submit"]').get(0).click();
+
+        // error should not exist
+        expect(mockSubmit.mock.calls[0][0]).toBeNull();
+
+        // value should be passed for all fields
+        expect(mockSubmit.mock.calls[0][1]).toEqual({ name: "foo" });
+
+        // raw event passed
+        expect(typeof mockSubmit.mock.calls[0][2]).toEqual("object");
+    });
 });
