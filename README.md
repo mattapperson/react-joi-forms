@@ -1,6 +1,8 @@
 # JoiForms
 
 [![Build Status](https://travis-ci.org/appersonlabs/react-joi-forms.svg)](https://travis-ci.org/appersonlabs/react-joi-forms)
+[![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+
 
 Don't fight with forms in React based apps again! En-Joi it! :)
 
@@ -9,7 +11,7 @@ npm install react-joi-forms
 ```
 
 ### What is JoiForms?
-A library that lets you create forms easily and painlessly from [Joi](http://github.com/hapijs/joi) Schemas. From simple CRUD forms to complex ones with custom input components... JoiForms has you covered.
+A library that lets you create forms easily and painlessly from [Joi... well, ok joi-browser](https://github.com/jeffbski/joi-browser) Schemas. From simple CRUD forms to complex ones with custom input components... JoiForms has you covered.
 
 ### Features
  - "It just works" out of the box!
