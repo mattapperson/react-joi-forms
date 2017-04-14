@@ -100,23 +100,27 @@ class Input extends Component {
         return <div style={this.props.style} />;
     }
 
-    __getFieldParams = (props, fieldSchema) => {
+    __getFieldParams = (props, fieldSchema, errors) => {
         var options = Object.assign(
-            {},
+            {
+                schema: fieldSchema,
+                errors: errors,
+                type: "text",
+                label: fieldSchema._flags.label,
+                required: fieldSchema._flags.presence === "required",
+                default: fieldSchema._flags.default
+            },
             Object.assign(...fieldSchema._meta),
             props
         );
+
+        options.key = options.name;
 
         // const multiField = options.multi;
         // const schemaForValids = multiField
         //     ? fieldSchema._inner.items[0]
         //     : fieldSchema;
         //
-        // const fieldName = options.name;
-        //
-        // const fieldComponent = fieldSchema._meta.component ||
-        //     props.type ||
-        //     "text";
         //
         // const hasValidsSet = schemaForValids._valids &&
         //     schemaForValids._valids._set &&
@@ -130,13 +134,7 @@ class Input extends Component {
         // }
         //
         // options = {
-        //     ...fieldSchema._meta,
-        //     required: fieldSchema._flags.presence === "required",
-        //     name: fieldName,
-        //     label: fieldSchema._flags.label,
-        //     key: fieldName,
         //     allowed: optionValues,
-        //     default: fieldSchema._flags ? fieldSchema._flags.default : undefined
         // };
         return options;
     };

@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from "react";
 import Joi from "joi-browser";
-import FormSection from "./FormSection";
 import { merge, camelize, reduce, keys, noop, defaultValues } from "./utils";
 import isEqual from "lodash.isequal";
 
@@ -84,7 +83,7 @@ class JoiForm extends Component {
 
     render() {
         const { children, inline } = this.props;
-        const childNodes = children || <FormSection />;
+        const childNodes = children;
         const onSubmit = this.submit;
 
         const vnode = inline

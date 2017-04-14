@@ -13,26 +13,30 @@ describe("JoiInput", () => {
         expect(component.find("div")).toHaveLength(1);
     });
 
-    test("Should merge meta with props ", () => {
-        var component = shallow(<Input baz="bar" />, {
+    test("Should merge meta with props and return field params", () => {
+        var component = shallow(<Input name="name" type="password" />, {
             context: {
                 joiForm: {
                     schema: {
-                        name: Joi.string().meta({ foo: "bar" })
+                        name: Joi.string().meta({ foo: "bar", name: "bar" })
                     }
                 }
             }
         });
         const getFieldParams = component.instance().__getFieldParams;
+        const fieldParams = getFieldParams(
+            component.instance().props,
+            component.context().joiForm.schema.name
+        );
 
-        expect(
-            getFieldParams(
-                component.instance().props,
-                component.context().joiForm.schema.name
-            )
-        ).toEqual({
-            baz: "bar",
-            foo: "bar"
-        });
+        expect(fieldParams.name).toEqual("name");
+        expect(fieldParams.type).toEqual("password");
+        expect(fieldParams.foo).toEqual("bar");
+        expect(typeof fieldParams.schema).toEqual("object");
+        expect(fieldParams.errors).toEqual(undefined);
+        expect(fieldParams.label).toEqual(undefined);
+        expect(fieldParams.required).toEqual(false);
+        expect(fieldParams.default).toEqual(undefined);
+        expect(fieldParams.key).toEqual("name");
     });
 });
