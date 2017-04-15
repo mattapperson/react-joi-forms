@@ -13,7 +13,7 @@
     "form"
   ],
   "scripts": {
-    "test": "jest --coverage",
+    "test": "jest --coverage src",
     "test-browser": "karma start ./karma.conf.js  --single-run",
     "prebuild": "rm -rf lib && rm -rf build",
     "build": "babel --stage 1 --plugins transform-class-properties ./src --out-dir ./lib",
@@ -33,8 +33,8 @@
     "babel-runtime": "^6.0.0",
     "babelify": "^7.3.0",
     "chai": "^3.2.0",
-    "enzyme": "^2.8.0",
-    "jest": "^19.0.2",
+    "enzyme": "^2.8.2",
+    "jest": "^19.0.0",
     "jsdom": "^9.12.0",
     "karma": "^1.6.0",
     "karma-chai": "^0.1.0",
@@ -75,6 +75,7 @@
     "lodash.isequal": "^4.4.0",
     "material-ui": "^0.17.2",
     "next": "^2.1.1",
+    "prop-types": "^15.5.8",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-tap-event-plugin": "^2.0.1"

@@ -12,25 +12,22 @@ const { object, string } = PropTypes;
 
 const debug = console.error;
 
-const __onChange = handler =>
-    e => {
-        if (e.preventDefault) e.preventDefault();
-        if (!handler) return;
+const __onChange = handler => e => {
+    if (e.preventDefault) e.preventDefault();
+    if (!handler) return;
 
-        const name = e.target.name;
-        const index = e.target.index;
-        const value = e.target.value;
-        const files = e.dataTransfer ? e.dataTransfer.files : e.target.files;
+    const name = e.target.name;
+    const index = e.target.index;
+    const value = e.target.value;
+    const files = e.dataTransfer ? e.dataTransfer.files : e.target.files;
+    const pos = index >= 0 ? "[" + index + "]" : "";
+    const change = { [name + pos]: files || value };
+    handler(e, change);
+};
 
-        const pos = index >= 0 ? "[" + index + "]" : "";
-        const change = { [name + pos]: files || value };
-        handler(e, change);
-    };
-
-const __onEvent = handler =>
-    e => {
-        if (handler) handler(e);
-    };
+const __onEvent = handler => e => {
+    if (handler) handler(e);
+};
 
 class Input extends Component {
     static propTypes = {

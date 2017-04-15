@@ -111,7 +111,8 @@ class JoiForm extends Component {
                         {}
                     );
                     this.setState({ errors }, () =>
-                        onSubmit(errors, values, e));
+                        onSubmit(errors, values, e)
+                    );
                     return;
                 }
                 onSubmit(null, values, e);
