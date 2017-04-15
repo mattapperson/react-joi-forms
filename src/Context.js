@@ -4,7 +4,7 @@ import { merge, camelize, reduce, keys, noop, defaultValues } from "./utils";
 import isEqual from "lodash.isequal";
 import PropTypes from "prop-types";
 import html5 from "./themes/html5";
-import reactnative from "./themes/reactnative";
+// import reactnative from "./themes/reactnative";
 
 class Context extends Component {
     static propTypes = {

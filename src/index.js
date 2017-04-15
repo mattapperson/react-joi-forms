@@ -2,6 +2,8 @@ import html5 from "./themes/html5";
 import material from "./themes/material";
 import JoiForm from "./JoiForm";
 import JoiInput from "./Input";
+import JoiFormContext from "./Context";
+
 import * as utils from "./utils";
 
 export const themes = {
@@ -9,4 +11,4 @@ export const themes = {
     material
 };
 
-export { utils, JoiInput, JoiForm };
+export { utils, JoiInput, JoiForm, JoiFormContext };

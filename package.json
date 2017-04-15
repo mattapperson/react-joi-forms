@@ -19,7 +19,9 @@
     "build": "babel --stage 1 --plugins transform-class-properties ./src --out-dir ./lib",
     "prepublish": "npm run build",
     "dev": "next",
-    "example": "next build && next start"
+    "example": "next build && next start",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "devDependencies": {
     "babel-core": "^6.24.0",
@@ -61,7 +63,8 @@
     "transfer-webpack-plugin": "^0.1.4",
     "vinyl-source-stream": "^1.1.0",
     "webpack": "^2.3.3",
-    "webpack-dev-server": "^2.4.2"
+    "webpack-dev-server": "^2.4.2",
+    "@kadira/storybook": "^2.21.0"
   },
   "repository": {
     "type": "git",

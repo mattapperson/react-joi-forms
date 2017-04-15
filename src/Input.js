@@ -58,30 +58,37 @@ class Input extends Component {
             formContext.schema[name],
             formContext.errors[name]
         );
+
         const fieldComponentCreator = joiFormGlobal.components[options.type];
 
         const fieldEvents = {
-            onChange: formContext.onChange(onChange),
-            onFocus: formContext.onEvent(onFocus),
-            onBlur: formContext.onEvent(onBlur)
+            onChange: __onChange(formContext.onChange),
+            onFocus: __onEvent(formContext.onEvent),
+            onBlur: __onEvent(formContext.onEvent)
         };
+
+        if (!fieldComponentCreator) {
+            return <span>No component of type {options.type} was found</span>;
+        }
 
         return fieldComponentCreator(options, fieldEvents);
     }
 
     __getFieldParams = (props, fieldSchema, errors) => {
-        var options = Object.assign(
-            {
-                schema: fieldSchema,
-                errors: errors,
-                type: "text",
-                label: fieldSchema._flags.label,
-                required: fieldSchema._flags.presence === "required",
-                default: fieldSchema._flags.default
-            },
-            Object.assign(...fieldSchema._meta),
-            props
-        );
+        var options = {
+            schema: fieldSchema,
+            errors: errors,
+            type: "text",
+            label: fieldSchema._flags.label,
+            required: fieldSchema._flags.presence === "required",
+            default: fieldSchema._flags.default
+        };
+
+        if (fieldSchema._meta.length !== 0) {
+            Object.assign(options, Object.assign(...fieldSchema._meta));
+        }
+
+        Object.assign(options, props);
 
         options.key = options.name;
 
