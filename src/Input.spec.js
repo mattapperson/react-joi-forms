@@ -8,7 +8,15 @@ import { shallow, mount } from "enzyme";
 
 describe("JoiInput", () => {
     test("Should create an empty container div", () => {
-        var component = shallow(<Input />);
+        var component = shallow(<Input />, {
+            joiFormGlobal: {
+                components: { text: () => {} }
+            },
+            joiForm: {
+                schema: {},
+                errors: {}
+            }
+        });
 
         expect(component.find("div")).toHaveLength(1);
     });
@@ -16,10 +24,20 @@ describe("JoiInput", () => {
     test("Should merge meta with props and return field params", () => {
         var component = shallow(<Input name="name" type="password" />, {
             context: {
+                joiFormGlobal: {
+                    components: {
+                        password: () => {
+                            return <span />;
+                        }
+                    }
+                },
                 joiForm: {
                     schema: {
                         name: Joi.string().meta({ foo: "bar", name: "bar" })
-                    }
+                    },
+                    errors: {},
+                    onChange: () => {},
+                    onEvent: () => {}
                 }
             }
         });

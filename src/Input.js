@@ -36,65 +36,37 @@ class Input extends Component {
         style: object
     };
 
+    static defaultProps = {
+        name: "",
+        fetchOptions: {},
+        fetchHeaders: {}
+    };
+
     static contextTypes = {
-        joiForm: object
+        joiForm: object,
+        joiFormGlobal: PropTypes.object
     };
 
     render() {
-        const { name, type } = this.props;
+        const { name, onChange, onFocus, onBlur } = this.props;
+        const { joiForm: formContext, joiFormGlobal } = this.context;
 
-        // const { joiForm: context } = this.context;
-        // const {
-        //     schema,
-        //     onChange,
-        //     onSelect2Search,
-        //     onAutocompleteSearch,
-        //     onFocus,
-        //     onBlur
-        // } = context;
-        //
-        // const fieldSchema = name === undefined
-        //     ? null
-        //     : getFieldSchemaByName(schema || {}, name);
-        //
-        // const fieldParams = this.__getFieldParams(this.props, fieldSchema);
-        //
-        // const fieldComponentCreator = context[`${fieldComponent}Component`];
-        // if (!fieldComponentCreator) {
-        //     debug(
-        //         "[JoiForm Error] The requested input type of " +
-        //             fieldComponent +
-        //             " does not have a defined component"
-        //     );
-        //     return (
-        //         <span>
-        //             Input type
-        //             {" "}
-        //             {fieldComponent}
-        //             {" "}
-        //             does not have a defined component type
-        //         </span>
-        //     );
-        // }
-        //
-        // const fieldErrors = context.getErrors(fieldName);
-        // const fieldValue = context.getValue(fieldName);
-        // const fieldEvents = {
-        //     onChange: __onChange(onChange),
-        //     onSelect2Search: __onSelect2Search(onSelect2Search),
-        //     onAutocompleteSearch: __onAutocompleteSearch(onAutocompleteSearch),
-        //     onFocus: __onEvent(onFocus),
-        //     onBlur: __onEvent(onBlur)
-        // };
-        //
-        // return fieldComponentCreator(
-        //     fieldErrors,
-        //     fieldValue,
-        //     options,
-        //     fieldEvents
-        // );
+        if (!formContext) return <div />;
 
-        return <div style={this.props.style} />;
+        const options = this.__getFieldParams(
+            this.props,
+            formContext.schema[name],
+            formContext.errors[name]
+        );
+        const fieldComponentCreator = joiFormGlobal.components[options.type];
+
+        const fieldEvents = {
+            onChange: formContext.onChange(onChange),
+            onFocus: formContext.onEvent(onFocus),
+            onBlur: formContext.onEvent(onBlur)
+        };
+
+        return fieldComponentCreator(options, fieldEvents);
     }
 
     __getFieldParams = (props, fieldSchema, errors) => {

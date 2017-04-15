@@ -13,6 +13,10 @@ class JoiForm extends Component {
         validateOpts: PropTypes.object
     };
 
+    static contextTypes = {
+        joiFormGlobal: PropTypes.object
+    };
+
     static childContextTypes = {
         joiForm: PropTypes.object
     };
