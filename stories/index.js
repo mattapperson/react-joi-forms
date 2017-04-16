@@ -25,8 +25,9 @@ storiesOf("Form", module).add("basic html5", () => (
                 enabled: Joi.boolean().label("Enabled").required(),
                 disabled: Joi.boolean()
                     .label("Disabled")
+                    .meta({ type: "checkbox" })
                     .required()
-                    .default(false),
+                    .default(true),
                 startDate: Joi.date()
                     .label("Start Date")
                     .required()
@@ -47,7 +48,7 @@ storiesOf("Form", module).add("basic html5", () => (
 
             <JoiInput name="name" label="Your name" />
 
-            <JoiInput name="disabled" type="checkbox" />
+            <JoiInput name="disabled" />
             <JoiInput name="surName" type="select" />
 
             <JoiInput name="bio" type="textArea" />

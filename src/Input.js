@@ -31,15 +31,10 @@ const __onEvent = handler => e => {
 
 class Input extends Component {
     static propTypes = {
-        name: string,
+        name: string.required,
         type: string,
         style: object,
         label: string
-    };
-
-    static defaultProps = {
-        name: "",
-        type: "text"
     };
 
     static contextTypes = {
@@ -76,10 +71,10 @@ class Input extends Component {
         return fieldComponentCreator(options, fieldEvents);
     }
 
-    __getFieldParams = (value, props, fieldSchema, error) => {
+    __getFieldParams = (value, props, fieldSchema, errors) => {
         var options = {
             schema: fieldSchema,
-            error: error,
+            error: errors,
             type: "text",
             value,
             label: fieldSchema._flags.label,
@@ -123,6 +118,7 @@ class Input extends Component {
         Object.assign(options, props);
 
         options.key = options.name;
+        console.log(options);
 
         return options;
     };
