@@ -33,13 +33,13 @@ class Input extends Component {
     static propTypes = {
         name: string,
         type: string,
-        style: object
+        style: object,
+        label: string
     };
 
     static defaultProps = {
         name: "",
-        fetchOptions: {},
-        fetchHeaders: {}
+        type: "text"
     };
 
     static contextTypes = {
@@ -84,34 +84,43 @@ class Input extends Component {
             default: fieldSchema._flags.default
         };
 
-        if (fieldSchema._meta.length !== 0) {
+        const schemaForValids = fieldSchema._meta.multi
+            ? fieldSchema._inner.items[0]
+            : fieldSchema;
+
+        //schemaForValids._meta = merge(schemaForValids._meta);
+        if (fieldSchema._meta.length > 0) {
             Object.assign(options, Object.assign(...fieldSchema._meta));
         }
+        const hasValidsSet =
+            schemaForValids._valids &&
+            schemaForValids._valids._set &&
+            schemaForValids._valids._set.length > 0;
+        // ---
+        // NOTE: commenting the code below for hotfixing but leaving it here for further review.
+        // We shouldn't hide components without valids set because schemas and data are
+        // dynamic. We may change the valids of one component based on the another inputs
+        // text, thus hiding and showing is not optimal regarding UX
+        // ---
+        // const isEnumerated = (fieldComponent === 'select' || fieldComponent === 'select2');
+        // if (isEnumerated && !hasValidsSet) {
+        //   debug(`${fieldName} is a ${fieldComponent} ${multiField ? 'with multiple values' : ''} component but no 'valid' params are provided, field is ignored`);
+        //   return null;
+        // }
+        // ---
+
+        let optionNames, optionValues;
+        if (hasValidsSet) {
+            optionValues =
+                schemaForValids._meta.names || schemaForValids._valids._set;
+            optionNames = schemaForValids._valids._set;
+        }
+        options.allowed = makeObject(optionNames, optionValues);
 
         Object.assign(options, props);
 
         options.key = options.name;
 
-        // const multiField = options.multi;
-        // const schemaForValids = multiField
-        //     ? fieldSchema._inner.items[0]
-        //     : fieldSchema;
-        //
-        //
-        // const hasValidsSet = schemaForValids._valids &&
-        //     schemaForValids._valids._set &&
-        //     schemaForValids._valids._set.length > 0;
-        //
-        // let optionNames, optionValues;
-        // if (hasValidsSet) {
-        //     optionValues = schemaForValids._meta.names ||
-        //         schemaForValids._valids._set;
-        //     optionNames = schemaForValids._valids._set;
-        // }
-        //
-        // options = {
-        //     allowed: optionValues,
-        // };
         return options;
     };
 }

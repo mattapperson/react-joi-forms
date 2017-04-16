@@ -41,7 +41,13 @@ storiesOf("Form", module).add("basic html5", () => (
             }}
             onChange={(e, formValues) => {}}
             onSubmit={(e, formValues) => {}}>
-            <JoiInput name="name" />
+            <JoiInput name="name" label="Your name" />
+
+            <JoiInput name="password" type="password" />
+            <JoiInput name="surName" type="select" />
+
+            <JoiInput name="bio" type="textArea" />
+            <JoiInput name="file" type="file" />
         </JoiForm>
     </JoiFormContext>
 ));

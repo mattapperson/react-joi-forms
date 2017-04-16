@@ -8,7 +8,8 @@ const components = {
             <div
                 key={key}
                 className={options.error ? "input-error" : "input-no-error"}>
-                {options.error}
+                {options.label &&
+                    <div><span>{options.label}:</span><br /></div>}
                 <input
                     {...options}
                     type={options.type}
@@ -17,22 +18,22 @@ const components = {
                     onFocus={events.onFocus}
                     onBlur={events.onBlur}
                 />
+                {options.error}
             </div>
         );
     },
     select: (options, events) => {
-        const { key, enums } = options;
+        const { key, allowed } = options;
         delete options.enums;
         delete options.key;
-
         return (
             <div key={key} className={options.error ? "input-error" : "input"}>
                 {options.error}
-                <select value={value} {...options}>
-                    {Object.keys(enums).map(option => {
+                <select value={options.value} {...options}>
+                    {Object.keys(allowed).map(option => {
                         return (
                             <option key={option} value={option}>
-                                {enums[option]}
+                                {allowed[option]}
                             </option>
                         );
                     })}
@@ -49,7 +50,7 @@ const components = {
                 {options.error}
                 <textarea
                     {...options}
-                    value={value}
+                    value={options.value}
                     onChange={events.onChange}
                     onFocus={events.onFocus}
                     onBlur={events.onBlur}
@@ -67,7 +68,7 @@ const components = {
                 {options.error}
                 <input
                     {...options}
-                    value={value}
+                    value={options.value}
                     onChange={events.onChange}
                     onFocus={events.onFocus}
                     onBlur={events.onBlur}
