@@ -52,8 +52,9 @@ class Input extends Component {
         const { joiForm: formContext, joiFormGlobal } = this.context;
 
         if (!formContext) return <div />;
-
+        console.log(formContext.values);
         const options = this.__getFieldParams(
+            formContext.values[name],
             this.props,
             formContext.schema[name],
             formContext.errors[name]
@@ -74,11 +75,12 @@ class Input extends Component {
         return fieldComponentCreator(options, fieldEvents);
     }
 
-    __getFieldParams = (props, fieldSchema, errors) => {
+    __getFieldParams = (value, props, fieldSchema, errors) => {
         var options = {
             schema: fieldSchema,
             errors: errors,
             type: "text",
+            value,
             label: fieldSchema._flags.label,
             required: fieldSchema._flags.presence === "required",
             default: fieldSchema._flags.default

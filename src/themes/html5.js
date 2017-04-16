@@ -28,8 +28,14 @@ const components = {
         delete options.key;
         return (
             <div key={key} className={options.error ? "input-error" : "input"}>
-                {options.error}
-                <select value={options.value} {...options}>
+                {options.label &&
+                    <div><span>{options.label}:</span><br /></div>}
+                <select
+                    value={options.value}
+                    {...options}
+                    onChange={events.onChange}
+                    onFocus={events.onFocus}
+                    onBlur={events.onBlur}>
                     {Object.keys(allowed).map(option => {
                         return (
                             <option key={option} value={option}>
@@ -38,6 +44,8 @@ const components = {
                         );
                     })}
                 </select>
+                {options.error}
+
             </div>
         );
     },
@@ -47,7 +55,8 @@ const components = {
 
         return (
             <div key={key} className={options.error ? "input-error" : "input"}>
-                {options.error}
+                {options.label &&
+                    <div><span>{options.label}:</span><br /></div>}
                 <textarea
                     {...options}
                     value={options.value}
@@ -55,6 +64,7 @@ const components = {
                     onFocus={events.onFocus}
                     onBlur={events.onBlur}
                 />
+                {options.error}
             </div>
         );
     },
@@ -65,7 +75,8 @@ const components = {
 
         return (
             <div key={key} className={options.error ? "input-error" : "input"}>
-                {options.error}
+                {options.label &&
+                    <div><span>{options.label}:</span><br /></div>}
                 <input
                     {...options}
                     value={options.value}
@@ -73,6 +84,7 @@ const components = {
                     onFocus={events.onFocus}
                     onBlur={events.onBlur}
                 />
+                {options.error}
             </div>
         );
     },
@@ -83,13 +95,16 @@ const components = {
 
         return (
             <div key={key} className={options.error ? "input-error" : "input"}>
-                {options.error}
+                {options.label &&
+                    <div><span>{options.label}:</span><br /></div>}
                 <input
                     {...options}
                     onChange={events.onChange}
                     onFocus={events.onFocus}
                     onBlur={events.onBlur}
                 />
+                {options.error}
+
             </div>
         );
     }

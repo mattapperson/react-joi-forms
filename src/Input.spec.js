@@ -14,6 +14,7 @@ describe("JoiInput", () => {
             },
             joiForm: {
                 schema: {},
+                values: {},
                 errors: {}
             }
         });
@@ -35,6 +36,7 @@ describe("JoiInput", () => {
                     schema: {
                         name: Joi.string()
                     },
+                    values: {},
                     errors: {},
                     onChange: () => {},
                     onEvent: () => {}
@@ -43,6 +45,7 @@ describe("JoiInput", () => {
         });
         const getFieldParams = component.instance().__getFieldParams;
         const fieldParams = getFieldParams(
+            component.context().joiForm.values.name,
             component.instance().props,
             component.context().joiForm.schema.name
         );
@@ -71,6 +74,7 @@ describe("JoiInput", () => {
                     schema: {
                         name: Joi.string().meta({ foo: "bar", name: "bar" })
                     },
+                    values: {},
                     errors: {},
                     onChange: () => {},
                     onEvent: () => {}
@@ -79,6 +83,7 @@ describe("JoiInput", () => {
         });
         const getFieldParams = component.instance().__getFieldParams;
         const fieldParams = getFieldParams(
+            component.context().joiForm.values.name,
             component.instance().props,
             component.context().joiForm.schema.name
         );

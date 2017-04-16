@@ -8,6 +8,10 @@ storiesOf("Welcome", module).add("to Storybook", () => (
     <Welcome showApp={linkTo("JoiForm")} />
 ));
 
+const cleanEvent = name => {
+    const actionFn = action(name);
+    return (...args) => actionFn("[SyntheticEvent]", args[1]);
+};
 storiesOf("Form", module).add("basic html5", () => (
     <JoiFormContext components={themes.html5}>
         <JoiForm
@@ -39,8 +43,8 @@ storiesOf("Form", module).add("basic html5", () => (
             values={{
                 name: "matt"
             }}
-            onChange={(e, formValues) => {}}
-            onSubmit={(e, formValues) => {}}>
+            onChange={cleanEvent("Form onChange")}
+            onSubmit={cleanEvent("Form onSubmit")}>
             <JoiInput name="name" label="Your name" />
 
             <JoiInput name="password" type="password" />
