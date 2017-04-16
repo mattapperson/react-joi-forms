@@ -18,7 +18,10 @@ const components = {
                     onFocus={events.onFocus}
                     onBlur={events.onBlur}
                 />
-                {options.error}
+                {options.error &&
+                    <div>
+                        <span style={{ color: "red" }}>{options.error}</span>
+                    </div>}
             </div>
         );
     },
@@ -44,7 +47,10 @@ const components = {
                         );
                     })}
                 </select>
-                {options.error}
+                {options.error &&
+                    <div>
+                        <span style={{ color: "red" }}>{options.error}</span>
+                    </div>}
 
             </div>
         );
@@ -64,7 +70,10 @@ const components = {
                     onFocus={events.onFocus}
                     onBlur={events.onBlur}
                 />
-                {options.error}
+                {options.error &&
+                    <div>
+                        <span style={{ color: "red" }}>{options.error}</span>
+                    </div>}
             </div>
         );
     },
@@ -84,7 +93,10 @@ const components = {
                     onFocus={events.onFocus}
                     onBlur={events.onBlur}
                 />
-                {options.error}
+                {options.error &&
+                    <div>
+                        <span style={{ color: "red" }}>{options.error}</span>
+                    </div>}
             </div>
         );
     },
@@ -103,7 +115,10 @@ const components = {
                     onFocus={events.onFocus}
                     onBlur={events.onBlur}
                 />
-                {options.error}
+                {options.error &&
+                    <div>
+                        <span style={{ color: "red" }}>{options.error}</span>
+                    </div>}
 
             </div>
         );

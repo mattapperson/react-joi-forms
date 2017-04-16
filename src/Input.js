@@ -52,7 +52,7 @@ class Input extends Component {
         const { joiForm: formContext, joiFormGlobal } = this.context;
 
         if (!formContext) return <div />;
-        console.log(formContext.values);
+
         const options = this.__getFieldParams(
             formContext.values[name],
             this.props,
@@ -68,17 +68,18 @@ class Input extends Component {
             onBlur: __onEvent(formContext.onEvent)
         };
 
-        if (!fieldComponentCreator) {
-            return <span>No component of type {options.type} was found</span>;
-        }
+        if (!fieldComponentCreator)
+            throw new Error(
+                `No component of type ${options.type} was found in the current component theme set for React-Joi-Form`
+            );
 
         return fieldComponentCreator(options, fieldEvents);
     }
 
-    __getFieldParams = (value, props, fieldSchema, errors) => {
+    __getFieldParams = (value, props, fieldSchema, error) => {
         var options = {
             schema: fieldSchema,
-            errors: errors,
+            error: error,
             type: "text",
             value,
             label: fieldSchema._flags.label,

@@ -17,8 +17,7 @@ storiesOf("Form", module).add("basic html5", () => (
         <JoiForm
             ref="form"
             schema={{
-                name: Joi.string().label("First Name").required().min(2),
-                password: Joi.string().label("Password").required().min(2),
+                name: Joi.string().label("First Name").required().max(4),
                 surName: Joi.string()
                     .label("Last Name")
                     .valid(["Apperson", "Moseman"]),
@@ -45,9 +44,10 @@ storiesOf("Form", module).add("basic html5", () => (
             }}
             onChange={cleanEvent("Form onChange")}
             onSubmit={cleanEvent("Form onSubmit")}>
+
             <JoiInput name="name" label="Your name" />
 
-            <JoiInput name="password" type="password" />
+            <JoiInput name="disabled" type="checkbox" />
             <JoiInput name="surName" type="select" />
 
             <JoiInput name="bio" type="textArea" />

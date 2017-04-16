@@ -146,11 +146,6 @@ class JoiForm extends Component {
 
         const onChange = this.props.onChange || noop;
         const { schema, errors } = this.state;
-        if (!errors || !errors[name]) {
-            onChange(e, newState.values);
-            this.setState(newState);
-            return;
-        }
 
         Joi.validate(value, schema[name], (err, value) => {
             const formErrors = err
@@ -160,6 +155,7 @@ class JoiForm extends Component {
                       {}
                   )
                 : {};
+            //console.log(formErrors);
             newState.errors = { ...errors, ...formErrors };
             if (!err) delete newState.errors[name];
             onChange(e, newState.values);
