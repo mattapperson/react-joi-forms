@@ -5,7 +5,7 @@ export const keys = Object.keys.bind(Object);
 
 export const assign = Object.assign.bind(Object);
 
-export const noop = () => {};
+export const noop = () => {return null};
 
 export function makeObject(list = [], values) {
     return reduce(list, (acc, val, i) => ({ ...acc, [val]: values[i] }), {});

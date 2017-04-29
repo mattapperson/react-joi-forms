@@ -8,6 +8,10 @@ class JoiForm extends Component {
         schema: PropTypes.object,
         values: PropTypes.object,
         errors: PropTypes.object,
+        url: PropTypes.string,
+        headers: PropTypes.object,
+        fetchOptions: PropTypes.object,
+        onResponse: PropTypes.func,
         onSubmit: PropTypes.func,
         onChange: PropTypes.func,
         validateOpts: PropTypes.object
@@ -97,10 +101,10 @@ class JoiForm extends Component {
     }
 
     submit = e => {
-        const { validateOpts, onSubmit } = this.props;
+        const { url, headers, fetchOptions, onResponse, validateOpts } = this.props;
+        const onSubmit = this.props.onSubmit || noop;
         const { values, schema } = this.state;
 
-        if (!onSubmit) return;
         if (e) e.preventDefault();
 
         Joi.validate(
@@ -120,9 +124,14 @@ class JoiForm extends Component {
                     return;
                 }
                 onSubmit(null, values, e);
+                this.__fetch(url, headers, values, fetchOptions, onResponse);
             }
         );
     };
+    
+    __fetch = (url, headers, values, fetchOptions, onResponse) => {
+        
+    }
 
     __onChange = (e, values) => {
         const { name, value } = e.target;
