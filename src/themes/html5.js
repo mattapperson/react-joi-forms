@@ -81,7 +81,7 @@ const components = {
         options.type = "checkbox";
         const key = options.key;
         delete options.key;
-        console.log(options.inputValue);
+
         return (
             <div key={key} className={options.error ? "input-error" : "input"}>
                 {options.label &&

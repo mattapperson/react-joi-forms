@@ -46,9 +46,20 @@ storiesOf("Form", module).add("basic html5", () => (
             onChange={cleanEvent("Form onChange")}
             onSubmit={cleanEvent("Form onSubmit")}>
 
+            // You can manualy configure fields:
             <JoiInput name="name" label="Your name" />
+            <hr />
 
+            // Or define props directly from the schema
             <JoiInput name="disabled" />
+            <hr />
+
+            // stick to the selected component theme, or create a one-off custom component
+            <JoiInput name="disabled">
+                {(options, events) => <input type="password" name={name} />}
+            </JoiInput>
+            <hr />
+            // most common elements are already included
             <JoiInput name="surName" type="select" />
 
             <JoiInput name="bio" type="textArea" />

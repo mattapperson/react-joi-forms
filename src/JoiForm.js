@@ -101,7 +101,13 @@ class JoiForm extends Component {
     }
 
     submit = e => {
-        const { url, headers, fetchOptions, onResponse, validateOpts } = this.props;
+        const {
+            url,
+            headers,
+            fetchOptions,
+            onResponse,
+            validateOpts
+        } = this.props;
         const onSubmit = this.props.onSubmit || noop;
         const { values, schema } = this.state;
 
@@ -128,10 +134,10 @@ class JoiForm extends Component {
             }
         );
     };
-    
+
     __fetch = (url, headers, values, fetchOptions, onResponse) => {
-        
-    }
+        // TODO support form submission directly in the form, but allow override
+    };
 
     __onChange = (e, values) => {
         const { name, value } = e.target;

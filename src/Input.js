@@ -43,7 +43,7 @@ class Input extends Component {
     };
 
     render() {
-        const { name, onChange, onFocus, onBlur } = this.props;
+        const { name, onChange, onFocus, onBlur, children } = this.props;
         const { joiForm: formContext, joiFormGlobal } = this.context;
 
         if (!formContext) return <div />;
@@ -62,6 +62,10 @@ class Input extends Component {
             onFocus: __onEvent(formContext.onEvent),
             onBlur: __onEvent(formContext.onEvent)
         };
+        console.log(options.name, typeof children);
+        if (children && typeof children === "function") {
+            return children(options, fieldEvents);
+        }
 
         if (!fieldComponentCreator)
             throw new Error(
@@ -118,7 +122,6 @@ class Input extends Component {
         Object.assign(options, props);
 
         options.key = options.name;
-        console.log(options);
 
         return options;
     };
